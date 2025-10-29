@@ -4,13 +4,22 @@ import { UserProvider } from './contexts/UserContext'
 import Home from './pages/Home'
 import Practice from './pages/Practice'
 import Results from './pages/Results'
+import DemoGate from './components/DemoGate'
+import DemoBanner from './components/DemoBanner'
 import { useExercise } from './contexts/ExerciseContext'
+import { initializeSession } from './utils/rateLimit'
 
 function AppContent() {
+  const [demoStarted, setDemoStarted] = useState(false)
   const [currentPage, setCurrentPage] = useState('home') // 'home', 'practice', 'results'
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [reviewSession, setReviewSession] = useState(null)
   const { setExerciseList, sessionResults } = useExercise()
+
+  const handleDemoStart = (isAdmin) => {
+    initializeSession()
+    setDemoStarted(true)
+  }
 
   const startPractice = (category) => {
     setSelectedCategory(category)
@@ -39,8 +48,13 @@ function AppContent() {
     setReviewSession(null)
   }
 
+  if (!demoStarted) {
+    return <DemoGate onStart={handleDemoStart} />
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-blue-50">
+      <DemoBanner />
       {currentPage === 'home' && (
         <Home 
           onSelectCategory={startPractice}
