@@ -5,7 +5,7 @@ import LoadingSpinner from './LoadingSpinner'
 import { useSQLExecutor } from '../hooks/useSQLExecutor'
 import { usePythonExecutor } from '../hooks/usePythonExecutor'
 import { compareSQLResults, comparePythonResults } from '../utils/codeValidator'
-import { getFeedback } from '../services/openaiAPI'
+import { getFeedback } from '../services/geminiAPI'
 import { useExercise } from '../contexts/ExerciseContext'
 
 const ExerciseCard = ({ exercise, onSubmit, exerciseNumber, totalExercises, onPrevious, onNext }) => {

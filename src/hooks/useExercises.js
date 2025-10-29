@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { generateExercises } from '../services/openaiAPI'
+import { generateExercises } from '../services/geminiAPI'
 import { useExercise } from '../contexts/ExerciseContext'
 import { useUser } from '../contexts/UserContext'
 

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getHint } from '../services/openaiAPI'
+import { getHint } from '../services/geminiAPI'
 import LoadingSpinner from './LoadingSpinner'
 
 const HelpModal = ({ exercise, userAnswer, onClose }) => {
