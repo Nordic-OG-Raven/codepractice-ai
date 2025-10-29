@@ -18,7 +18,7 @@ export const generateExercises = async (category, level = 1) => {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
     const prompt = generateExercisesPrompt(category, level)
     
     const result = await model.generateContent(prompt)
@@ -54,7 +54,7 @@ export const getHint = async (question, userAnswer, correctSolution) => {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
     const prompt = generateHintPrompt(question, userAnswer, correctSolution)
     
     const result = await model.generateContent(prompt)
@@ -77,7 +77,7 @@ export const getFeedback = async (question, userAnswer, correctSolution, errorMe
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
     const prompt = generateFeedbackPrompt(question, userAnswer, correctSolution, errorMessage)
     
     const result = await model.generateContent(prompt)
