@@ -30,6 +30,21 @@ Requirements:
 - Include practical, real-world scenarios
 - Provide the expected solution code
 
+CRITICAL: Solutions MUST be syntactically valid and executable code:
+- Python: NEVER split 'with' statement across lines - use nested with statements instead
+- Python: Use proper line continuation (backslashes \\) ONLY when absolutely necessary
+- Python: Test all syntax before including
+- SQL: Use standard SQL syntax that works in SQLite
+- NO syntax errors, NO incomplete statements
+
+WRONG Python (causes SyntaxError):
+with open('file1.txt') as f1,
+     open('file2.txt') as f2:
+
+CORRECT Python (use nested with):
+with open('file1.txt') as f1:
+    with open('file2.txt') as f2:
+
 For SQL exercises, assume these tables exist:
 - customers (id, name, email, country, signup_date)
 - orders (id, customer_id, product_id, quantity, order_date, total_amount)

@@ -1,0 +1,887 @@
+{
+  "Data Engineering": [
+    {
+      "id": "py-b-01",
+      "question": "You have customer data in a CSV file 'customers.csv'. Write a Python script to read this file and load each row as a dictionary into a list. Assume the CSV has 'name', 'email', 'country' headers.",
+      "solution": "import csv\nimport io\n\ncsv_data = \"\"\"name,email,country\nAlice,alice@example.com,USA\nBob,bob@example.com,Canada\nCharlie,charlie@example.com,USA\"\"\"\n\n# Simulate reading from a file using io.StringIO\ncustomers = []\nfor row in csv.DictReader(io.StringIO(csv_data)):\n    customers.append(row)\n\n# Expected output: [{'name': 'Alice', 'email': 'alice@example.com', 'country': 'USA'}, ...]\nassert len(customers) == 3\nassert customers[0]['name'] == 'Alice'\nassert customers[2]['country'] == 'USA'",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sql-b-02",
+      "question": "A data analyst needs to quickly see all customers from 'USA'. Write a SQL query to select their `id`, `name`, and `email` from the `customers` table.",
+      "solution": "SELECT id, name, email FROM customers WHERE country = 'USA';",
+      "language": "sql",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "py-b-03",
+      "question": "You have a list of product dictionaries. Write a Python script to save this data into a JSON formatted string, simulating saving to a file named 'products_output.json'.",
+      "solution": "import json\n\nproducts_data = [\n    {'id': 101, 'name': 'Laptop', 'price': 1200},\n    {'id': 102, 'name': 'Mouse', 'price': 25}\n]\n\n# Simulate writing to a file by generating a JSON string\n# In a real scenario, you'd use: \n# with open('products_output.json', 'w') as f:\n#     json.dump(products_data, f, indent=2)\njson_output = json.dumps(products_data, indent=2)\n\n# Verify the format and content\nloaded_data = json.loads(json_output)\nassert loaded_data == products_data",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sql-b-04",
+      "question": "As part of an inventory check, find all products with 'stock' less than 100. Select their `name`, `category`, and `stock`.",
+      "solution": "SELECT name, category, stock FROM products WHERE stock < 100;",
+      "language": "sql",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "py-b-05",
+      "question": "You received sales data where 'price' is a string. Write a Python function `clean_price(item)` that takes a dictionary `item` with a 'price' key, converts the 'price' to a float, and returns the modified item. If 'price' is missing or not convertible, return the original item.",
+      "solution": "def clean_price(item):\n    if 'price' in item:\n        try:\n            item['price'] = float(item['price'])\n        except (ValueError, TypeError):\n            pass # Keep original if conversion fails\n    return item\n\n# Test cases\ndata1 = {'name': 'Widget', 'price': '99.99'}\ndata2 = {'name': 'Gadget', 'price': 'abc'}\ndata3 = {'name': 'Thing'}\n\ncleaned_data1 = clean_price(data1)\ncleaned_data2 = clean_price(data2)\ncleaned_data3 = clean_price(data3)\n\nassert cleaned_data1['price'] == 99.99\nassert cleaned_data2['price'] == 'abc'\nassert 'price' not in cleaned_data3",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sql-b-06",
+      "question": "Calculate the total number of orders placed in the system. Your query should return a single count.",
+      "solution": "SELECT COUNT(id) FROM orders;",
+      "language": "sql",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "py-b-07",
+      "question": "Simulate a basic batch processing step. Given a list of customer IDs, process them in chunks of 2. For each chunk, print the IDs being processed (or store them for verification).",
+      "solution": "customer_ids = [1, 2, 3, 4, 5, 6, 7]\nbatch_size = 2\nprocessed_batches = []\n\nfor i in range(0, len(customer_ids), batch_size):\n    batch = customer_ids[i : i + batch_size]\n    # print(f\"Processing batch: {batch}\")\n    processed_batches.append(batch)\n\nassert processed_batches == [[1, 2], [3, 4], [5, 6], [7]]",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "py-b-08",
+      "question": "You have a list of product names, some of which might have leading/trailing whitespace. Write a Python script to clean these names by removing extra spaces and convert them to uppercase.",
+      "solution": "product_names = [\"  Laptop Pro  \", \"Wireless Mouse\", \" Desk Chair \", \"Coffee Mug \"]\n\ncleaned_names = [name.strip().upper() for name in product_names]\n\nassert cleaned_names == ['LAPTOP PRO', 'WIRELESS MOUSE', 'DESK CHAIR', 'COFFEE MUG']",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "py-i-09",
+      "question": "Implement a simple ETL process: Extract product data from 'products_raw.csv', calculate a new field `estimated_revenue` (price * stock), and load the transformed data into a JSON formatted string, simulating 'products_transformed.json'.",
+      "solution": "import csv\nimport json\nimport io\n\n# Simulate input CSV file content\ncsv_content = \"\"\"id,name,category,price,stock\n101,Laptop Pro,Electronics,1200.00,50\n102,Wireless Mouse,Electronics,25.00,200\n103,Desk Chair,Furniture,150.00,75\"\"\"\n\n# E: Extract\nproducts_raw = []\nfor row in csv.DictReader(io.StringIO(csv_content)):\n    products_raw.append(row)\n\n# T: Transform\nproducts_transformed = []\nfor product in products_raw:\n    try:\n        # Ensure we're working on a copy to avoid modifying original raw_data during loop\n        transformed_product = product.copy()\n        price = float(transformed_product['price'])\n        stock = int(transformed_product['stock'])\n        transformed_product['estimated_revenue'] = price * stock\n        products_transformed.append(transformed_product)\n    except (ValueError, KeyError):\n        # Skip or log rows with bad data\n        pass\n\n# L: Load (Simulate writing to file)\njson_output = json.dumps(products_transformed, indent=2)\n\nassert len(products_transformed) == 3\nassert products_transformed[0]['estimated_revenue'] == 60000.0\nassert products_transformed[1]['estimated_revenue'] == 5000.0",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "sql-i-10",
+      "question": "Find the total amount spent by each customer. Your query should return `customer_id`, `customer_name`, and `total_spent`. Order the results by `total_spent` in descending order.",
+      "solution": "SELECT\n    c.id AS customer_id,\n    c.name AS customer_name,\n    SUM(o.total_amount) AS total_spent\nFROM customers AS c\nJOIN orders AS o\n    ON c.id = o.customer_id\nGROUP BY c.id, c.name\nORDER BY total_spent DESC;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "py-i-11",
+      "question": "You have sales records from multiple CSV files (e.g., 'sales_jan.csv', 'sales_feb.csv'). Write a Python script to read all CSVs from a simulated list, combine their data, and save the aggregated data into a single JSON formatted string, simulating 'all_sales.json'.",
+      "solution": "import csv\nimport json\nimport io\n\n# Simulate multiple CSV files content\nsales_jan_csv = \"\"\"order_id,product,amount\n101,Laptop,1200.00\n102,Mouse,25.00\"\"\"\nsales_feb_csv = \"\"\"order_id,product,amount\n103,Keyboard,75.00\n104,Monitor,300.00\"\"\"\n\n# Simulate file paths (or content readers)\ncsv_files_content = {\n    'sales_jan.csv': sales_jan_csv,\n    'sales_feb.csv': sales_feb_csv\n}\n\nall_sales_data = []\nfor filename, content in csv_files_content.items():\n    # Simulate reading each file\n    for row in csv.DictReader(io.StringIO(content)):\n        all_sales_data.append(row)\n\n# Simulate writing to a single JSON file\njson_output = json.dumps(all_sales_data, indent=2)\n\n# Verify the combined data\nassert len(all_sales_data) == 4\nassert all_sales_data[0]['order_id'] == '101'\nassert all_sales_data[3]['product'] == 'Monitor'",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "sql-i-12",
+      "question": "Identify the top 3 best-selling products by total `quantity` sold. Return `product_name`, `category`, and `total_quantity_sold`.",
+      "solution": "SELECT\n    p.name AS product_name,\n    p.category,\n    SUM(o.quantity) AS total_quantity_sold\nFROM products AS p\nJOIN orders AS o\n    ON p.id = o.product_id\nGROUP BY p.id, p.name, p.category\nORDER BY total_quantity_sold DESC\nLIMIT 3;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "py-i-13",
+      "question": "Write a Python function `validate_email(email)` that checks if an email address is valid (contains '@' and '.' and '@' appears before the last '.'). Return `True` for valid, `False` otherwise.",
+      "solution": "import re\n\ndef validate_email(email):\n    # A basic regex for email validation\n    pattern = r\"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$\"\n    return re.match(pattern, email) is not None\n\n# Test cases\nassert validate_email('test@example.com') is True\nassert validate_email('user.name@sub.domain.co.uk') is True\nassert validate_email('invalid-email') is False\nassert validate_email('no@dotcom') is False",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "sql-i-14",
+      "question": "Calculate the average order value (`total_amount`) for each country where customers are located. Return `country` and `average_order_value`. Exclude countries with no orders.",
+      "solution": "SELECT\n    c.country,\n    AVG(o.total_amount) AS average_order_value\nFROM customers AS c\nJOIN orders AS o\n    ON c.id = o.customer_id\nGROUP BY c.country\nHAVING COUNT(o.id) > 0\nORDER BY average_order_value DESC;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "py-i-15",
+      "question": "Create a Python script that connects to an in-memory SQLite database, creates a `temp_customers` table, and inserts two new customer records. Afterward, select all records to verify.",
+      "solution": "import sqlite3\n\nconn = sqlite3.connect(':memory:')\ncursor = conn.cursor()\n\ncursor.execute('''\n    CREATE TABLE temp_customers (\n        id INTEGER PRIMARY KEY,\n        name TEXT,\n        email TEXT\n    )\n''')\n\ncustomers_to_insert = [\n    (1, 'John Doe', 'john@example.com'),\n    (2, 'Jane Smith', 'jane@example.com')\n]\n\ncursor.executemany(\n    'INSERT INTO temp_customers (id, name, email) VALUES (?, ?, ?)',\n    customers_to_insert\n)\n\nconn.commit()\n\ncursor.execute('SELECT * FROM temp_customers')\nresults = cursor.fetchall()\n\nassert len(results) == 2\nassert results[0][1] == 'John Doe'\nassert results[1][2] == 'jane@example.com'\n\nconn.close()",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "sql-i-16",
+      "question": "A data warehouse team needs a `VIEW` for `daily_sales_summary`. Create a view that shows `order_date`, `total_orders` (count), and `total_revenue` (sum of `total_amount`) for each day.",
+      "solution": "CREATE VIEW daily_sales_summary AS\nSELECT\n    order_date,\n    COUNT(id) AS total_orders,\n    SUM(total_amount) AS total_revenue\nFROM orders\nGROUP BY order_date\nORDER BY order_date;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "py-i-17",
+      "question": "Write a Python script that connects to an in-memory SQLite database (simulating 'mydatabase.db'), filters for customers from 'Canada', and saves their `name` and `email` to a CSV formatted string, simulating 'canada_customers.csv'.",
+      "solution": "import sqlite3\nimport csv\nimport io\n\n# Simulate an in-memory database for testing\nconn = sqlite3.connect(':memory:')\ncursor = conn.cursor()\ncursor.execute('''\n    CREATE TABLE customers (\n        id INTEGER PRIMARY KEY,\n        name TEXT,\n        email TEXT,\n        country TEXT\n    )\n''')\ncursor.execute(\"INSERT INTO customers (id, name, email, country) VALUES (1, 'Alice', 'alice@usa.com', 'USA'), (2, 'Bob', 'bob@canada.com', 'Canada'), (3, 'Charlie', 'charlie@canada.com', 'Canada')\")\nconn.commit()\n\n# Extract and Transform\ncursor.execute(\"SELECT name, email FROM customers WHERE country = 'Canada'\")\ncanada_customers = cursor.fetchall()\n\n# Simulate Load to CSV string\ncsv_buffer = io.StringIO()\nwriter = csv.writer(csv_buffer)\nwriter.writerow(['name', 'email'])\nwriter.writerows(canada_customers)\ncsv_output = csv_buffer.getvalue()\n\n# Verify the output\noutput_lines = csv_output.strip().split('\\n')\nassert len(output_lines) == 3 # Header + 2 rows\nassert 'name,email' in output_lines[0]\nassert 'Bob,bob@canada.com' in output_lines[1]\nassert 'Charlie,charlie@canada.com' in output_lines[2]\n\nconn.close()",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "sql-i-18",
+      "question": "A promotion requires updating the 'stock' of all 'Electronics' products by adding 10 units. Write a SQL query to perform this update.",
+      "solution": "UPDATE products\nSET stock = stock + 10\nWHERE category = 'Electronics';",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "py-i-19",
+      "question": "Write a Python script that defines a `Product` class with attributes `id`, `name`, `price`, `stock`. Then, create a list of `Product` objects from a list of dictionaries and print their names.",
+      "solution": "class Product:\n    def __init__(self, id, name, price, stock):\n        self.id = id\n        self.name = name\n        self.price = price\n        self.stock = stock\n\n    def __repr__(self):\n        return f\"Product({self.name})\"\n\nproduct_dicts = [\n    {'id': 201, 'name': 'Desk Lamp', 'price': 35.0, 'stock': 100},\n    {'id': 202, 'name': 'Notebook', 'price': 15.0, 'stock': 250}\n]\n\nproducts = [\n    Product(p_dict['id'], p_dict['name'], p_dict['price'], p_dict['stock'])\n    for p_dict in product_dicts\n]\n\nassert products[0].name == 'Desk Lamp'\nassert products[1].stock == 250",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "py-i-20",
+      "question": "Simulate a data pipeline step that might fail. Write a Python function `process_data_safely(data_item)` that attempts to process a `data_item` (e.g., convert a string to int) and gracefully handles `ValueError` if the conversion fails, printing an error message (or returning a specific error string) instead of crashing.",
+      "solution": "def process_data_safely(data_item):\n    try:\n        value = int(data_item)\n        return f\"Processed: {value}\"\n    except ValueError:\n        return f\"Error: Could not convert '{data_item}' to int.\"\n\n# Test cases\nassert process_data_safely('456') == 'Processed: 456'\nassert 'Error' in process_data_safely('xyz')",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "py-a-21",
+      "question": "Design a configurable ETL pipeline. Your Python script should read a configuration from a JSON string (simulating `pipeline_config.json`). This config specifies input CSV content, output JSON content (simulated), and a list of transformations. Each transformation is a dictionary with `type` (e.g., 'rename_column', 'convert_type') and `params` (e.g., `{'old_name': 'ID', 'new_name': 'customer_id'}` or `{'column': 'price', 'to_type': 'float'}`). Implement the script to apply these transformations to the input CSV data before producing the JSON output.",
+      "solution": "import json\nimport csv\nimport io\n\n# Simulate configuration file content\nconfig_content = \"\"\"\n{\n    \"input_csv_data\": \"ID,Product Name,Price,Quantity\\n1,Laptop Pro,1200.50,1\\n2,Wireless Mouse,25.99,2\\n3,Desk Chair,150,1\",\n    \"transformations\": [\n        {\"type\": \"rename_column\", \"params\": {\"old_name\": \"Product Name\", \"new_name\": \"product_name\"}},\n        {\"type\": \"convert_type\", \"params\": {\"column\": \"Price\", \"to_type\": \"float\"}},\n        {\"type\": \"convert_type\", \"params\": {\"column\": \"Quantity\", \"to_type\": \"int\"}}\n    ]\n}\n\"\"\"\n\n# Load configuration\nconfig = json.loads(config_content)\ncsv_input = config['input_csv_data']\ntransformations = config['transformations']\n\n# E: Extract (simulate reading CSV)\ndata = []\nfor row in csv.DictReader(io.StringIO(csv_input)):\n    data.append(row)\n\n# T: Transform\ntransformed_data = []\nfor item in data:\n    transformed_item = item.copy() # Work on a copy\n    for t in transformations:\n        if t['type'] == 'rename_column':\n            old_name = t['params']['old_name']\n            new_name = t['params']['new_name']\n            if old_name in transformed_item:\n                transformed_item[new_name] = transformed_item.pop(old_name)\n        elif t['type'] == 'convert_type':\n            column = t['params']['column']\n            to_type_str = t['params']['to_type']\n            if column in transformed_item:\n                try:\n                    if to_type_str == 'float':\n                        transformed_item[column] = float(transformed_item[column])\n                    elif to_type_str == 'int':\n                        # Convert to int via float to handle potential decimals like '150.0'\n                        transformed_item[column] = int(float(transformed_item[column]))\n                except (ValueError, TypeError):\n                    # Handle conversion errors gracefully, e.g., keep original value\n                    pass\n    transformed_data.append(transformed_item)\n\n# L: Load (simulate writing to JSON)\njson_output = json.dumps(transformed_data, indent=2)\n\n# Verify transformations\nassert len(transformed_data) == 3\nassert transformed_data[0]['product_name'] == 'Laptop Pro'\nassert transformed_data[0]['Price'] == 1200.50\nassert transformed_data[2]['Quantity'] == 1\nassert 'Product Name' not in transformed_data[0] # Original column name removed",
+      "language": "python",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "py-a-22",
+      "question": "Simulate a stream processing scenario. You receive a 'log file' as a list of lines. Process these lines in chunks of 3. For each chunk, count the number of 'ERROR' messages and store the count. The processing should stop if 'END_STREAM' is encountered, even if it's mid-chunk.",
+      "solution": "log_lines = [\n    \"INFO: App started\",\n    \"DEBUG: Processing request 1\",\n    \"ERROR: Database connection failed\",\n    \"INFO: Request 1 completed\",\n    \"DEBUG: Processing request 2\",\n    \"ERROR: File not found\",\n    \"INFO: Cleanup done\",\n    \"END_STREAM\",\n    \"ERROR: This should not be processed\"\n]\n\nbatch_size = 3\nerror_counts_per_batch = []\n\ncurrent_index = 0\nwhile current_index < len(log_lines):\n    batch = log_lines[current_index : current_index + batch_size]\n    \n    end_stream_found = False\n    processed_sub_batch = []\n    for line in batch:\n        if line == 'END_STREAM':\n            end_stream_found = True\n            break\n        processed_sub_batch.append(line)\n    \n    if processed_sub_batch:\n        error_count = sum(1 for line in processed_sub_batch if 'ERROR' in line)\n        error_counts_per_batch.append(error_count)\n\n    if end_stream_found:\n        break\n        \n    current_index += batch_size\n\nassert error_counts_per_batch == [1, 1, 0]",
+      "language": "python",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "py-a-23",
+      "question": "Implement a simple data quality check framework. Write a Python script that takes a list of data dictionaries and a list of `rules`. Each rule is a dictionary like `{'column': 'price', 'check': 'greater_than_zero'}` or `{'column': 'email', 'check': 'is_valid_email'}`. For each data item, apply the rules and collect items that fail any rule into an 'invalid_records' list. Assume `is_valid_email` and `greater_than_zero` functions are provided.",
+      "solution": "import re\nimport json\n\ndef is_valid_email(email):\n    pattern = r\"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$\"\n    return re.match(pattern, email) is not None\n\ndef check_greater_than_zero(value):\n    try:\n        return float(value) > 0\n    except (ValueError, TypeError):\n        return False\n\n# Data and Rules\ndata_records = [\n    {'id': 1, 'name': 'Alice', 'email': 'alice@example.com', 'age': 30, 'price': '100.50'},\n    {'id': 2, 'name': 'Bob', 'email': 'invalid-email', 'age': -5, 'price': '50.00'},\n    {'id': 3, 'name': 'Charlie', 'email': 'charlie@domain.com', 'age': 25, 'price': '-10.00'},\n    {'id': 4, 'name': 'Diana', 'email': 'diana@test.com', 'age': 35, 'price': '10.00'}\n]\n\nrules_config = [\n    {'column': 'email', 'check': 'is_valid_email'},\n    {'column': 'age', 'check': 'greater_than_zero'},\n    {'column': 'price', 'check': 'greater_than_zero'}\n]\n\n# Mapping check names to functions\nquality_checks = {\n    'is_valid_email': is_valid_email,\n    'greater_than_zero': check_greater_than_zero\n}\n\ninvalid_records = []\n\nfor record in data_records:\n    is_record_valid = True\n    failed_rules_for_record = []\n    for rule in rules_config:\n        column = rule['column']\n        check_name = rule['check']\n        \n        if column in record and check_name in quality_checks:\n            checker_func = quality_checks[check_name]\n            if not checker_func(record[column]):\n                is_record_valid = False\n                failed_rules_for_record.append(f\"{column} failed {check_name}\")\n        elif column not in record: # Handle missing columns as a failure\n            is_record_valid = False\n            failed_rules_for_record.append(f\"Missing required column: {column}\")\n\n    if not is_record_valid:\n        invalid_records.append({'record': record, 'failures': failed_rules_for_record})\n\nassert len(invalid_records) == 2\nassert 'email failed is_valid_email' in invalid_records[0]['failures']\nassert 'age failed greater_than_zero' in invalid_records[1]['failures']\nassert 'price failed greater_than_zero' in invalid_records[1]['failures']",
+      "language": "python",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "sql-a-24",
+      "question": "A common reporting requirement is to have a denormalized table for customer order summaries. Create a new table `customer_order_summary` that includes `customer_id`, `customer_name`, `customer_email`, `country`, `total_orders_placed`, and `total_amount_spent`. Populate this table from the existing `customers` and `orders` tables. Ensure customers with no orders are also included with 0 for counts/amounts.",
+      "solution": "CREATE TABLE customer_order_summary (\n    customer_id INTEGER PRIMARY KEY,\n    customer_name TEXT,\n    customer_email TEXT,\n    country TEXT,\n    total_orders_placed INTEGER,\n    total_amount_spent REAL\n);\n\nINSERT INTO customer_order_summary (\n    customer_id, customer_name, customer_email, country,\n    total_orders_placed, total_amount_spent\n)\nSELECT\n    c.id AS customer_id,\n    c.name AS customer_name,\n    c.email AS customer_email,\n    c.country,\n    COUNT(o.id) AS total_orders_placed,\n    COALESCE(SUM(o.total_amount), 0.0) AS total_amount_spent\nFROM customers AS c\nLEFT JOIN orders AS o\n    ON c.id = o.customer_id\nGROUP BY c.id, c.name, c.email, c.country\nORDER BY c.id;",
+      "language": "sql",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "sql-a-25",
+      "question": "Calculate the 3-day rolling average of `total_amount` for orders. Assume orders are sorted by `order_date`. Return `order_date`, `total_amount`, and `rolling_average`. For dates with less than 3 preceding orders, use available orders to compute the average.",
+      "solution": "SELECT\n    order_date,\n    total_amount,\n    AVG(total_amount) OVER (\n        ORDER BY order_date ASC\n        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW\n    ) AS rolling_average\nFROM orders\nORDER BY order_date ASC;",
+      "language": "sql",
+      "difficulty": "advanced"
+    }
+  ],
+  "Analytics Engineering": [
+    {
+      "id": "ex-001",
+      "question": "You have customer data with potential missing email addresses. Load the provided data into a pandas DataFrame and fill any missing 'email' values with 'unknown@example.com'.",
+      "solution": "import pandas as pd\nimport numpy as np\n\ncustomers_df = pd.DataFrame({\n    'customer_id': [1, 2, 3, 4, 5, 6],\n    'name': ['Alice', 'Bob', 'Charlie', 'David', 'Eve', 'Frank'],\n    'email': ['alice@example.com', 'bob@mail.com', np.nan, 'david@example.com', 'eve@mail.com', None],\n    'country': ['USA', 'Canada', 'USA', 'UK', 'Canada', 'USA'],\n    'signup_date': ['2023-01-15', '2023-01-20', '2023-02-01', '2023-02-10', '2023-03-01', '2023-03-05']\n})\n\n# Fill missing email addresses\ncustomers_df['email'] = customers_df['email'].fillna('unknown@example.com')\n\nprint(customers_df)",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ex-002",
+      "question": "As a data analyst, you need to quickly see basic information for all customers. Write a SQL query to select the `id`, `name`, and `email` for all customers from the `customers` table.",
+      "solution": "SELECT id, name, email FROM customers;",
+      "language": "sql",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ex-003",
+      "question": "You have a list of products with their prices. Create a new column called 'discounted_price' which is 10% less than the original 'price' for products that cost more than $20. For others, it should be the original price.",
+      "solution": "import pandas as pd\n\nproducts_df = pd.DataFrame({\n    'product_id': [1001, 1002, 1003, 1004, 1005],\n    'name': ['Laptop', 'Mouse', 'Keyboard', 'Monitor', 'Webcam'],\n    'category': ['Electronics', 'Electronics', 'Electronics', 'Electronics', 'Peripherals'],\n    'price': [500.00, 20.00, 75.00, 300.00, 15.00],\n    'stock': [100, 200, 150, 50, 75]\n})\n\n# Calculate discounted price\nproducts_df['discounted_price'] = products_df.apply(\n    lambda row: row['price'] * 0.9 if row['price'] > 20 else row['price'],\n    axis=1\n)\n\nprint(products_df)",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-004",
+      "question": "Calculate the total number of orders placed by each customer. Your result should show the `customer_id` and the `order_count`, ordered by `order_count` in descending order.",
+      "solution": "SELECT customer_id, COUNT(id) AS order_count\nFROM orders\nGROUP BY customer_id\nORDER BY order_count DESC;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-005",
+      "question": "Given sales data with 'Region', 'Product', and 'Sales' figures, calculate the total sales for each 'Region'.",
+      "solution": "import pandas as pd\n\nsales_data = pd.DataFrame({\n    'Region': ['East', 'West', 'North', 'South', 'East', 'West'],\n    'Product': ['A', 'B', 'A', 'C', 'B', 'A'],\n    'Sales': [100, 150, 120, 80, 110, 90]\n})\n\n# Group by Region and sum Sales\ntotal_sales_by_region = sales_data.groupby('Region')['Sales'].sum().reset_index()\n\nprint(total_sales_by_region)",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ex-006",
+      "question": "Identify and count duplicate entries based on 'ID' and 'Timestamp' in a dataset, which could indicate data quality issues or erroneous re-entries.",
+      "solution": "import pandas as pd\nimport numpy as np\n\ndirty_data = pd.DataFrame({\n    'ID': [1, 2, 3, 1, 5, 2, 7],\n    'Value': [10, 20, np.nan, 40, 50, 20, 60],\n    'Category': ['A', 'B', 'A', 'C', 'B', 'A', 'D'],\n    'Timestamp': ['2023-01-01 10:00:00', '2023-01-02 11:00:00', '2023-01-01 10:00:00', '2023-01-03 12:00:00', '2023-01-02 11:00:00', '2023-01-04 13:00:00', '2023-01-05 14:00:00']\n})\n\n# Identify duplicates based on 'ID' and 'Timestamp'\nduplicates = dirty_data[dirty_data.duplicated(subset=['ID', 'Timestamp'], keep=False)]\n\nprint(f\"Number of duplicate rows: {len(duplicates)}\")\nprint(duplicates)",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-007",
+      "question": "Retrieve a list of all orders along with the name of the customer who placed each order. Include `order_id`, `order_date`, `total_amount`, and `customer_name`.",
+      "solution": "SELECT o.id AS order_id, o.order_date, o.total_amount, c.name AS customer_name\nFROM orders AS o\nJOIN customers AS c ON o.customer_id = c.id;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-008",
+      "question": "Your sales team has provided a new CSV file with customer contact information, but the column names are inconsistent. Load the data and rename the column 'CustName' to 'Customer Name' and 'EmailAddr' to 'Email Address' for better readability.",
+      "solution": "import pandas as pd\n\n# Assume this is loaded from a CSV\ncustomers_raw = pd.DataFrame({\n    'CustID': [1, 2, 3],\n    'CustName': ['Alice', 'Bob', 'Charlie'],\n    'EmailAddr': ['alice@mail.com', 'bob@mail.com', 'charlie@mail.com']\n})\n\n# Rename columns\ncustomers_clean = customers_raw.rename(columns={\n    'CustName': 'Customer Name',\n    'EmailAddr': 'Email Address'\n})\n\nprint(customers_clean)",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ex-009",
+      "question": "Identify the top 3 customers who have spent the most in total across all their orders. Return their `customer_id`, `name`, and their `total_spent`.",
+      "solution": "SELECT c.id AS customer_id, c.name, SUM(o.total_amount) AS total_spent\nFROM customers AS c\nJOIN orders AS o ON c.id = o.customer_id\nGROUP BY c.id, c.name\nORDER BY total_spent DESC\nLIMIT 3;",
+      "language": "sql",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "ex-010",
+      "question": "You've received a product inventory report where 'stock' is loaded as a string. Convert the 'stock' column to an integer data type to allow for numerical operations. Handle any non-numeric values by setting them to `0`.",
+      "solution": "import pandas as pd\n\nproducts_df = pd.DataFrame({\n    'product_id': [1001, 1002, 1003, 1004, 1005],\n    'name': ['Laptop', 'Mouse', 'Keyboard', 'Monitor', 'Webcam'],\n    'stock': ['100', '200', 'invalid', '50', '75'] # Stock loaded as string, one invalid entry\n})\n\n# Convert 'stock' to numeric, coercing errors to NaN, then fill NaN with 0 and convert to int\nproducts_df['stock'] = pd.to_numeric(products_df['stock'], errors='coerce').fillna(0).astype(int)\n\nprint(products_df.info())\nprint(products_df)",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-011",
+      "question": "Find all products that have never been ordered. Return their `product_id` and `name`.",
+      "solution": "SELECT p.id AS product_id, p.name\nFROM products AS p\nLEFT JOIN orders AS o ON p.id = o.product_id\nWHERE o.product_id IS NULL;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-012",
+      "question": "From a list of online orders, filter to show only orders with a 'total_amount' greater than or equal to $100.",
+      "solution": "import pandas as pd\n\norders_df = pd.DataFrame({\n    'order_id': [101, 102, 103, 104, 105, 106, 107],\n    'customer_id': [1, 2, 1, 3, 2, 4, 1],\n    'total_amount': [50.00, 120.00, 25.00, 150.00, 90.00, 200.00, 75.00]\n})\n\n# Filter orders by total_amount\nhigh_value_orders = orders_df[orders_df['total_amount'] >= 100]\n\nprint(high_value_orders)",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ex-013",
+      "question": "Transform a 'long' format sales DataFrame (with 'Quarter', 'Sales' columns) into a 'wide' format, where each quarter becomes a column, showing sales per 'Region' and 'Product'.",
+      "solution": "import pandas as pd\n\nsales_long = pd.DataFrame({\n    'Region': ['East', 'East', 'West', 'West', 'North', 'North'],\n    'Product': ['A', 'A', 'B', 'B', 'A', 'A'],\n    'Quarter': ['Q1', 'Q2', 'Q1', 'Q2', 'Q1', 'Q2'],\n    'Sales': [100, 120, 150, 160, 120, 130]\n})\n\n# Pivot the DataFrame\nsales_wide = sales_long.pivot_table(\n    index=['Region', 'Product'],\n    columns='Quarter',\n    values='Sales'\n).reset_index()\n\nsales_wide.columns.name = None # Remove the 'Quarter' name from columns index\n\nprint(sales_wide)",
+      "language": "python",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "ex-014",
+      "question": "As part of data quality checks, identify customers whose email addresses do not contain an '@' symbol or a '.' after the '@' symbol. Return their `id` and `email`.",
+      "solution": "SELECT id, email\nFROM customers\nWHERE email NOT LIKE '%@%.%' OR email IS NULL;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-015",
+      "question": "You have two separate DataFrames: one with customer IDs and names, and another with order IDs and the customer IDs. Merge these two DataFrames to link each order to the customer's name.",
+      "solution": "import pandas as pd\n\ncustomers_df = pd.DataFrame({\n    'customer_id': [1, 2, 3],\n    'name': ['Alice', 'Bob', 'Charlie']\n})\n\norders_df = pd.DataFrame({\n    'order_id': [101, 102, 103, 104],\n    'customer_id': [1, 2, 1, 3],\n    'total_amount': [50.00, 120.00, 25.00, 150.00]\n})\n\n# Merge DataFrames\nmerged_df = pd.merge(orders_df, customers_df, on='customer_id', how='left')\n\nprint(merged_df)",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-016",
+      "question": "Calculate the monthly total sales for each product category, displaying the `year`, `month`, `category_name`, and `total_monthly_sales`. Order the results by year, then month, then category.",
+      "solution": "SELECT\n    STRFTIME('%Y', o.order_date) AS sales_year,\n    STRFTIME('%m', o.order_date) AS sales_month,\n    p.category AS category_name,\n    SUM(o.total_amount) AS total_monthly_sales\nFROM orders AS o\nJOIN products AS p ON o.product_id = p.id\nGROUP BY sales_year, sales_month, category_name\nORDER BY sales_year, sales_month, category_name;",
+      "language": "sql",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "ex-017",
+      "question": "Load a dataset from a CSV file named 'sales_data.csv' into a pandas DataFrame. Assume the CSV has 'Date', 'Product', 'Quantity', 'Price' columns.",
+      "solution": "import pandas as pd\nimport io\n\n# In a real scenario, this would be `pd.read_csv('sales_data.csv')`\n# For this exercise, simulate a CSV in a string.\ncsv_data = \"\"\"Date,Product,Quantity,Price\n2023-01-01,Laptop,2,1200\n2023-01-01,Mouse,1,25\n2023-01-02,Keyboard,3,75\n2023-01-02,Laptop,1,1200\n\"\"\"\n\nsales_df = pd.read_csv(io.StringIO(csv_data))\n\nprint(sales_df.head())",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ex-018",
+      "question": "Extract the domain name (e.g., 'example.com') from a 'email' column in a DataFrame. Assume all emails are valid and contain a single '@'.",
+      "solution": "import pandas as pd\n\ncustomers_df = pd.DataFrame({\n    'customer_id': [1, 2, 3],\n    'email': ['alice@example.com', 'bob@mail.net', 'charlie@web.org']\n})\n\n# Extract domain using string methods\ncustomers_df['domain'] = customers_df['email'].str.split('@').str[1]\n\nprint(customers_df)",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-019",
+      "question": "Calculate the average `total_amount` for orders placed in each `country`. Only consider countries with at least 2 orders.",
+      "solution": "SELECT c.country, AVG(o.total_amount) AS average_order_value\nFROM customers AS c\nJOIN orders AS o ON c.id = o.customer_id\nGROUP BY c.country\nHAVING COUNT(o.id) >= 2\nORDER BY average_order_value DESC;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-020",
+      "question": "Identify potential outlier 'total_amount' values in an 'orders' DataFrame. Flag orders where the 'total_amount' is more than 3 standard deviations above the mean. Add a boolean column 'is_outlier'.",
+      "solution": "import pandas as pd\nimport numpy as np\n\norders_df = pd.DataFrame({\n    'order_id': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110],\n    'total_amount': [50.00, 60.00, 55.00, 70.00, 52.00, 65.00, 58.00, 2000.00, 62.00, 75.00]\n})\n\n# Calculate mean and standard deviation\nmean_amount = orders_df['total_amount'].mean()\nstd_amount = orders_df['total_amount'].std()\n\n# Define outlier threshold\nthreshold = mean_amount + 3 * std_amount\n\n# Create 'is_outlier' column\norders_df['is_outlier'] = orders_df['total_amount'] > threshold\n\nprint(orders_df)",
+      "language": "python",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "ex-021",
+      "question": "From a DataFrame containing 'order_date' as a string, convert it to datetime objects and then extract the year and month into separate new columns: 'order_year' and 'order_month'.",
+      "solution": "import pandas as pd\n\norders_df = pd.DataFrame({\n    'order_id': [101, 102, 103],\n    'order_date': ['2023-01-15', '2023-02-28', '2024-11-05'],\n    'total_amount': [50.00, 120.00, 25.00]\n})\n\n# Convert 'order_date' to datetime\norders_df['order_date'] = pd.to_datetime(orders_df['order_date'])\n\n# Extract year and month\norders_df['order_year'] = orders_df['order_date'].dt.year\norders_df['order_month'] = orders_df['order_date'].dt.month\n\nprint(orders_df)",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-022",
+      "question": "List all orders that have a `total_amount` greater than $100, displaying `order_id`, `customer_id`, and `total_amount`. Order the results by `total_amount` in descending order.",
+      "solution": "SELECT id AS order_id, customer_id, total_amount\nFROM orders\nWHERE total_amount > 100\nORDER BY total_amount DESC;",
+      "language": "sql",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ex-023",
+      "question": "Apply a custom tax calculation to the 'total_amount' column in an orders DataFrame. If the `total_amount` is less than $100, apply a 5% tax; otherwise, apply a 10% tax. Store the result in a new column called 'total_amount_with_tax'.",
+      "solution": "import pandas as pd\n\norders_df = pd.DataFrame({\n    'order_id': [101, 102, 103, 104, 105],\n    'total_amount': [50.00, 120.00, 95.00, 200.00, 75.00]\n})\n\n# Define a custom tax function\ndef calculate_tax(amount):\n    if amount < 100:\n        return amount * 1.05\n    else:\n        return amount * 1.10\n\n# Apply the function to the 'total_amount' column\norders_df['total_amount_with_tax'] = orders_df['total_amount'].apply(calculate_tax)\n\nprint(orders_df)",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-024",
+      "question": "Find customers who placed orders on consecutive days. Return the `customer_id`, and both `order_date`s for each consecutive pair.",
+      "solution": "WITH CustomerOrders AS (\n    SELECT\n        customer_id,\n        order_date,\n        LAG(order_date, 1, '1900-01-01') OVER (\n            PARTITION BY customer_id ORDER BY order_date\n        ) AS prev_order_date\n    FROM orders\n)\nSELECT\n    co.customer_id,\n    co.prev_order_date,\n    co.order_date\nFROM CustomerOrders AS co\nWHERE JULIANDAY(co.order_date) - JULIANDAY(co.prev_order_date) = 1;",
+      "language": "sql",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "ex-025",
+      "question": "Check for uniqueness in a 'product_id' column to ensure there are no duplicate product identifiers. If duplicates exist, report them.",
+      "solution": "import pandas as pd\n\nproducts_df = pd.DataFrame({\n    'product_id': [1001, 1002, 1003, 1001, 1004, 1005],\n    'name': ['Laptop', 'Mouse', 'Keyboard', 'Laptop', 'Monitor', 'Webcam']\n})\n\n# Check for duplicate product_ids\nduplicate_ids = products_df[products_df.duplicated(subset=['product_id'], keep=False)]\n\nif not duplicate_ids.empty:\n    print(\"Duplicate product IDs found:\")\n    print(duplicate_ids)\nelse:\n    print(\"No duplicate product IDs found.\")",
+      "language": "python",
+      "difficulty": "beginner"
+    }
+  ],
+  "Data Analysis": [
+    {
+      "id": "ex-01-py-beginner",
+      "question": "You've received a CSV file `sales_data.csv` containing recent sales transactions. Your first step is to load it and get a quick overview.\n\nLoad `sales_data.csv` into a pandas DataFrame and display the first 5 rows.",
+      "solution": "import pandas as pd\nimport io\n\n# Simulate a CSV file for testing\ncsv_data = \"\"\"order_id,customer_id,product_id,quantity,price,order_date\n1,101,A,2,10.00,2023-01-01\n2,102,B,1,25.50,2023-01-01\n3,101,C,3,5.00,2023-01-02\n4,103,A,1,10.00,2023-01-02\n5,102,D,2,12.00,2023-01-03\n6,104,B,1,25.50,2023-01-03\n\"\"\"\ndf = pd.read_csv(io.StringIO(csv_data))\nprint(df.head())",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ex-02-py-beginner",
+      "question": "After loading your `sales_data` DataFrame, you need to quickly assess the data quality, specifically looking at data types and the presence of missing values.\n\nFor the `sales_data` DataFrame (assume it's loaded as `df`), display its information, including data types and non-null counts.",
+      "solution": "import pandas as pd\nimport io\n\ncsv_data = \"\"\"order_id,customer_id,product_id,quantity,price,order_date\n1,101,A,2,10.00,2023-01-01\n2,102,B,1,25.50,2023-01-01\n3,101,C,3,5.00,2023-01-02\n4,103,A,1,10.00,2023-01-02\n5,102,D,2,12.00,2023-01-03\n6,104,B,1,25.50,2023-01-03\n7,105,E,,15.00,2023-01-04\n8,106,F,1,,2023-01-04\n\"\"\"\ndf = pd.read_csv(io.StringIO(csv_data))\nprint(df.info())",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ex-03-py-beginner",
+      "question": "As a data analyst for an e-commerce company, you want to get a quick summary of numerical sales figures like quantity and price.\n\nFor the `sales_data` DataFrame (`df`), generate descriptive statistics for all numerical columns.",
+      "solution": "import pandas as pd\nimport io\n\ncsv_data = \"\"\"order_id,customer_id,product_id,quantity,price,order_date\n1,101,A,2,10.00,2023-01-01\n2,102,B,1,25.50,2023-01-01\n3,101,C,3,5.00,2023-01-02\n4,103,A,1,10.00,2023-01-02\n5,102,D,2,12.00,2023-01-03\n6,104,B,1,25.50,2023-01-03\n\"\"\"\ndf = pd.read_csv(io.StringIO(csv_data))\nprint(df.describe())",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ex-04-py-beginner",
+      "question": "Your marketing team wants to identify all sales orders where the `quantity` of a product purchased was greater than 1.\n\nFrom the `sales_data` DataFrame (`df`), filter and display all rows where the `quantity` is greater than 1.",
+      "solution": "import pandas as pd\nimport io\n\ncsv_data = \"\"\"order_id,customer_id,product_id,quantity,price,order_date\n1,101,A,2,10.00,2023-01-01\n2,102,B,1,25.50,2023-01-01\n3,101,C,3,5.00,2023-01-02\n4,103,A,1,10.00,2023-01-02\n5,102,D,2,12.00,2023-01-03\n6,104,B,1,25.50,2023-01-03\n\"\"\"\ndf = pd.read_csv(io.StringIO(csv_data))\nfiltered_df = df[df['quantity'] > 1]\nprint(filtered_df)",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ex-05-sql-beginner",
+      "question": "You need to retrieve a full list of all customers currently in your database.\n\nWrite a SQL query to select all columns for every customer from the `customers` table.",
+      "solution": "SELECT id, name, email, country, signup_date FROM customers;",
+      "language": "sql",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ex-06-sql-beginner",
+      "question": "The inventory team needs to see which products have a stock level below 10.\n\nWrite a SQL query to find the `name` and `stock` of all products where `stock` is less than 10.",
+      "solution": "SELECT name, stock FROM products WHERE stock < 10;",
+      "language": "sql",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ex-07-sql-beginner",
+      "question": "Your manager wants to know the total number of orders placed in the system.\n\nWrite a SQL query to count the total number of orders in the `orders` table.",
+      "solution": "SELECT COUNT(id) AS total_orders FROM orders;",
+      "language": "sql",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ex-08-py-beginner",
+      "question": "You want to understand the distribution of products sold in your `sales_data`.\n\nFor the `sales_data` DataFrame (`df`), count the occurrences of each unique `product_id`.",
+      "solution": "import pandas as pd\nimport io\n\ncsv_data = \"\"\"order_id,customer_id,product_id,quantity,price,order_date\n1,101,A,2,10.00,2023-01-01\n2,102,B,1,25.50,2023-01-01\n3,101,C,3,5.00,2023-01-02\n4,103,A,1,10.00,2023-01-02\n5,102,D,2,12.00,2023-01-03\n6,104,B,1,25.50,2023-01-03\n\"\"\"\ndf = pd.read_csv(io.StringIO(csv_data))\nprint(df['product_id'].value_counts())",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ex-09-py-intermediate",
+      "question": "The sales team wants to know the total quantity and average price of items sold per `product_id`.\n\nUsing the `sales_data` DataFrame (`df`), group by `product_id` and calculate the sum of `quantity` and the mean of `price` for each product.",
+      "solution": "import pandas as pd\nimport io\n\ncsv_data = \"\"\"order_id,customer_id,product_id,quantity,price,order_date\n1,101,A,2,10.00,2023-01-01\n2,102,B,1,25.50,2023-01-01\n3,101,C,3,5.00,2023-01-02\n4,103,A,1,10.00,2023-01-02\n5,102,D,2,12.00,2023-01-03\n6,104,B,1,25.50,2023-01-03\n\"\"\"\ndf = pd.read_csv(io.StringIO(csv_data))\nproduct_summary = df.groupby('product_id').agg(\n    total_quantity=('quantity', 'sum'),\n    average_price=('price', 'mean')\n)\nprint(product_summary)",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-10-py-intermediate",
+      "question": "You need to add a new column to the `sales_data` DataFrame (`df`) that represents the `total_item_revenue` for each line item, calculated as `quantity * price`.\n\nAdd a new column named `total_item_revenue` to the `df` DataFrame by multiplying `quantity` and `price`. Display the head of the updated DataFrame.",
+      "solution": "import pandas as pd\nimport io\n\ncsv_data = \"\"\"order_id,customer_id,product_id,quantity,price,order_date\n1,101,A,2,10.00,2023-01-01\n2,102,B,1,25.50,2023-01-01\n3,101,C,3,5.00,2023-01-02\n4,103,A,1,10.00,2023-01-02\n5,102,D,2,12.00,2023-01-03\n6,104,B,1,25.50,2023-01-03\n\"\"\"\ndf = pd.read_csv(io.StringIO(csv_data))\ndf['total_item_revenue'] = df['quantity'] * df['price']\nprint(df.head())",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-11-py-intermediate",
+      "question": "A dataset `product_reviews.csv` contains customer ratings, but some `rating` values are missing. You want to fill these missing ratings with the average rating to avoid losing data.\n\nLoad `product_reviews.csv` (assume it has `product_id`, `review_text`, `rating`). Fill any missing `rating` values with the mean of the existing `rating` values. Display the first 5 rows and check for nulls in the `rating` column.",
+      "solution": "import pandas as pd\nimport io\n\ncsv_data = \"\"\"product_id,review_text,rating\nP001,Great product,5\nP002,Decent value,4\nP003,Not bad,\nP004,Loved it!,5\nP005,Okay,3\nP006,Could be better,\n\"\"\"\ndf_reviews = pd.read_csv(io.StringIO(csv_data))\n\n# Convert 'rating' to numeric, coercing errors to NaN\ndf_reviews['rating'] = pd.to_numeric(df_reviews['rating'], errors='coerce')\n\nmean_rating = df_reviews['rating'].mean()\ndf_reviews['rating'].fillna(mean_rating, inplace=True)\n\nprint(df_reviews.head())\nprint(\"\\nNulls in 'rating' after filling:\", df_reviews['rating'].isnull().sum())",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-12-sql-intermediate",
+      "question": "The product management team wants to know which product categories generate the most revenue.\n\nCalculate the total revenue for each `category` of products. Display the `category` and the sum of `total_amount` for orders linked to products in that category, ordered by revenue in descending order.",
+      "solution": "SELECT\n    p.category,\n    SUM(o.total_amount) AS total_category_revenue\nFROM\n    orders o\nJOIN\n    products p ON o.product_id = p.id\nGROUP BY\n    p.category\nORDER BY\n    total_category_revenue DESC;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-13-sql-intermediate",
+      "question": "The marketing team wants to identify loyal customers who have placed more than one order.\n\nFind the `name` and `email` of customers who have placed more than 1 order.",
+      "solution": "SELECT\n    c.name,\n    c.email\nFROM\n    customers c\nJOIN\n    orders o ON c.id = o.customer_id\nGROUP BY\n    c.id, c.name, c.email\nHAVING\n    COUNT(o.id) > 1;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-14-sql-intermediate",
+      "question": "The finance department needs to know the average value of an order to assess transaction sizes.\n\nCalculate the average of the `total_amount` for all orders.",
+      "solution": "SELECT AVG(total_amount) AS average_order_value FROM orders;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-15-py-intermediate",
+      "question": "You want to visually explore the relationship between `quantity` and `price` in your sales data to see if there's any obvious correlation.\n\nUsing the `sales_data` DataFrame (`df`), create a scatter plot with `quantity` on the x-axis and `price` on the y-axis. Label the axes and give the plot a title.",
+      "solution": "import pandas as pd\nimport matplotlib.pyplot as plt\nimport io\n\ncsv_data = \"\"\"order_id,customer_id,product_id,quantity,price,order_date\n1,101,A,2,10.00,2023-01-01\n2,102,B,1,25.50,2023-01-01\n3,101,C,3,5.00,2023-01-02\n4,103,A,1,10.00,2023-01-02\n5,102,D,2,12.00,2023-01-03\n6,104,B,1,25.50,2023-01-03\n7,105,A,5,9.50,2023-01-04\n8,106,B,1,26.00,2023-01-04\n\"\"\"\ndf = pd.read_csv(io.StringIO(csv_data))\n\nplt.figure(figsize=(8, 6))\nplt.scatter(df['quantity'], df['price'])\nplt.title('Quantity vs. Price in Sales Data')\nplt.xlabel('Quantity')\nplt.ylabel('Price')\nplt.grid(True)\nplt.tight_layout()\n# plt.show() # In a real environment, uncomment to display",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-16-py-intermediate",
+      "question": "To get a complete view of orders, you need to combine information from `orders` with `customer` details.\n\nAssume you have two DataFrames: `df_orders` (with `customer_id`, `order_date`, `total_amount`) and `df_customers` (with `id`, `name`, `country`). Merge these two DataFrames to include customer names and countries in the order data. Display the first 5 rows of the merged DataFrame.",
+      "solution": "import pandas as pd\nimport io\n\norders_data = \"\"\"id,customer_id,product_id,quantity,order_date,total_amount\n1,101,P1,2,2023-01-01,20.00\n2,102,P2,1,2023-01-01,15.50\n3,101,P3,3,2023-01-02,30.00\n4,103,P1,1,2023-01-02,10.00\n\"\"\"\ncustomers_data = \"\"\"id,name,email,country,signup_date\n101,Alice,alice@example.com,USA,2022-10-01\n102,Bob,bob@example.com,Canada,2022-11-15\n103,Charlie,charlie@example.com,USA,2022-12-01\n\"\"\"\ndf_orders = pd.read_csv(io.StringIO(orders_data))\ndf_customers = pd.read_csv(io.StringIO(customers_data))\n\nmerged_df = pd.merge(df_orders, df_customers[['id', 'name', 'country']],\n                         left_on='customer_id', right_on='id', how='left')\nmerged_df.drop(columns=['id_y'], inplace=True) # Drop redundant 'id' column from customers\nmerged_df.rename(columns={'id_x': 'order_id'}, inplace=True) # Rename order id for clarity\n\nprint(merged_df.head())",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-17-py-intermediate",
+      "question": "Your company wants to track monthly sales trends. You have a DataFrame `df_daily_sales` with daily sales data including a `date` column and a `sales_amount` column.\n\nConvert the `date` column to datetime objects, set it as the index, and then resample the `sales_amount` data to get the total `sales_amount` for each month. Display the resulting DataFrame.",
+      "solution": "import pandas as pd\nimport io\n\nsales_data = \"\"\"date,sales_amount\n2023-01-01,100\n2023-01-05,150\n2023-01-15,200\n2023-02-01,120\n2023-02-10,180\n2023-03-01,300\n\"\"\"\ndf_daily_sales = pd.read_csv(io.StringIO(sales_data))\n\ndf_daily_sales['date'] = pd.to_datetime(df_daily_sales['date'])\ndf_daily_sales.set_index('date', inplace=True)\n\nmonthly_sales = df_daily_sales['sales_amount'].resample('M').sum()\nprint(monthly_sales)",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-18-py-intermediate",
+      "question": "You are analyzing customer `total_amount` spent from the `orders` table and want to visualize its distribution to understand common spending patterns.\n\nGenerate a histogram of the `total_amount` column from a DataFrame `df_orders`. Set the title and x-axis label.",
+      "solution": "import pandas as pd\nimport matplotlib.pyplot as plt\nimport io\n\norders_data = \"\"\"id,customer_id,product_id,quantity,order_date,total_amount\n1,101,P1,2,2023-01-01,20.00\n2,102,P2,1,2023-01-01,15.50\n3,101,P3,3,2023-01-02,30.00\n4,103,P1,1,2023-01-02,10.00\n5,104,P2,2,2023-01-03,25.00\n6,105,P3,1,2023-01-03,12.00\n7,101,P1,4,2023-01-04,45.00\n8,102,P2,1,2023-01-04,18.00\n\"\"\"\ndf_orders = pd.read_csv(io.StringIO(orders_data))\n\nplt.figure(figsize=(8, 6))\nplt.hist(df_orders['total_amount'], bins=10, edgecolor='black')\nplt.title('Distribution of Order Total Amount')\nplt.xlabel('Total Amount')\nplt.ylabel('Frequency')\nplt.grid(axis='y', alpha=0.75)\nplt.tight_layout()\n# plt.show() # In a real environment, uncomment to display",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-19-sql-intermediate",
+      "question": "The inventory manager needs to identify products in the 'Electronics' category that have less than 50 units in stock.\n\nFind the `name`, `category`, and `stock` of products that belong to the 'Electronics' category and have a `stock` level below 50.",
+      "solution": "SELECT name, category, stock\nFROM products\nWHERE category = 'Electronics' AND stock < 50;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-20-sql-intermediate",
+      "question": "The inventory team wants to identify the top 5 most frequently ordered products by total quantity sold.\n\nFind the `name` and total `quantity` sold for the top 5 products with the highest total quantity across all orders.",
+      "solution": "SELECT\n    p.name,\n    SUM(o.quantity) AS total_quantity_sold\nFROM\n    orders o\nJOIN\n    products p ON o.product_id = p.id\nGROUP BY\n    p.name\nORDER BY\n    total_quantity_sold DESC\nLIMIT 5;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ex-21-py-advanced",
+      "question": "A/B testing was performed on a website, with users split into a control group (A) and a test group (B). You have `group_a_scores` and `group_b_scores` (numerical lists representing individual conversion rates or outcomes). You want to determine if there's a statistically significant difference in conversion rates between the two groups.\n\nUsing `scipy.stats`, perform an independent t-test (assume equal variance) to compare the means of the two sample arrays. Print the t-statistic and p-value, and interpret the result if alpha = 0.05.",
+      "solution": "from scipy import stats\nimport numpy as np\n\n# Simulate conversion rates for two groups\nnp.random.seed(42)\ngroup_a_scores = np.random.normal(loc=0.10, scale=0.03, size=100)\ngroup_b_scores = np.random.normal(loc=0.12, scale=0.03, size=120)\n\n# Perform independent t-test (assuming equal variance)\nt_stat, p_value = stats.ttest_ind(group_a_scores, group_b_scores, equal_var=True)\n\nprint(f\"T-statistic: {t_stat:.4f}\")\nprint(f\"P-value: {p_value:.4f}\")\n\nalpha = 0.05\nif p_value < alpha:\n    print(f\"Conclusion: Reject the null hypothesis. There is a statistically significant difference (p < {alpha}).\")\nelse:\n    print(f\"Conclusion: Fail to reject the null hypothesis. There is no statistically significant difference (p >= {alpha}).\")",
+      "language": "python",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "ex-22-py-advanced",
+      "question": "For financial analysis, you need to calculate a 3-day rolling average of stock prices to smooth out daily fluctuations and identify trends.\n\nGiven a DataFrame `df_stock_prices` with a `Date` column (datetime objects) and a `Price` column, calculate the 3-day rolling mean of the `Price`. The result should be aligned to the right (end of the window). Display the DataFrame with the new rolling mean column.",
+      "solution": "import pandas as pd\nimport io\n\ncsv_data = \"\"\"Date,Price\n2023-01-01,100\n2023-01-02,102\n2023-01-03,101\n2023-01-04,105\n2023-01-05,103\n2023-01-06,106\n2023-01-07,108\n\"\"\"\ndf_stock_prices = pd.read_csv(io.StringIO(csv_data))\ndf_stock_prices['Date'] = pd.to_datetime(df_stock_prices['Date'])\ndf_stock_prices.set_index('Date', inplace=True)\n\n# Calculate 3-day rolling mean\ndf_stock_prices['Rolling_Mean_3D'] = \\\n    df_stock_prices['Price'].rolling(window=3, closed='right').mean()\n\nprint(df_stock_prices)",
+      "language": "python",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "ex-23-sql-advanced",
+      "question": "The product strategy team wants to identify \"super shoppers\" who have purchased at least one product from every available product category.\n\nWrite a SQL query using CTEs or subqueries to find the `name` and `email` of customers who have ordered products from *all* distinct product categories present in the `products` table.",
+      "solution": "WITH CustomerProductCategories AS (\n    SELECT DISTINCT\n        o.customer_id,\n        p.category\n    FROM\n        orders o\n    JOIN\n        products p ON o.product_id = p.id\n),\nCustomerCategoryCounts AS (\n    SELECT\n        customer_id,\n        COUNT(DISTINCT category) AS distinct_categories_bought\n    FROM\n        CustomerProductCategories\n    GROUP BY\n        customer_id\n),\nTotalCategories AS (\n    SELECT COUNT(DISTINCT category) AS total_distinct_categories\n    FROM products\n)\nSELECT\n    c.name,\n    c.email\nFROM\n    customers c\nJOIN\n    CustomerCategoryCounts ccc ON c.id = ccc.customer_id\nCROSS JOIN\n    TotalCategories tc\nWHERE\n    ccc.distinct_categories_bought = tc.total_distinct_categories;",
+      "language": "sql",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "ex-24-sql-advanced",
+      "question": "For each customer, you want to see their cumulative spending over time, ordered by order date.\n\nFor each `customer_id`, calculate the running total of `total_amount` for their orders, ordered by `order_date`. Display `customer_id`, `order_date`, `total_amount`, and the `running_total_amount`.",
+      "solution": "SELECT\n    customer_id,\n    order_date,\n    total_amount,\n    SUM(total_amount) OVER (PARTITION BY customer_id ORDER BY order_date) AS running_total_amount\nFROM\n    orders\nORDER BY\n    customer_id, order_date;",
+      "language": "sql",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "ex-25-py-intermediate",
+      "question": "You need to analyze sales data to see how `total_item_revenue` is distributed across different `product_id`s for each `customer_id`.\n\nAssume `df` contains `customer_id`, `product_id`, and `total_item_revenue`. Create a pivot table showing the sum of `total_item_revenue` for each `customer_id` (rows) and `product_id` (columns). Fill any missing values with 0.",
+      "solution": "import pandas as pd\nimport io\n\ncsv_data = \"\"\"order_id,customer_id,product_id,quantity,price,order_date\n1,101,A,2,10.00,2023-01-01\n2,102,B,1,25.50,2023-01-01\n3,101,C,3,5.00,2023-01-02\n4,103,A,1,10.00,2023-01-02\n5,102,D,2,12.00,2023-01-03\n6,104,B,1,25.50,2023-01-03\n7,101,A,1,10.00,2023-01-04\n\"\"\"\ndf = pd.read_csv(io.StringIO(csv_data))\ndf['total_item_revenue'] = df['quantity'] * df['price']\n\npivot_table = pd.pivot_table(df, values='total_item_revenue',\n                                 index='customer_id',\n                                 columns='product_id',\n                                 aggfunc='sum',\n                                 fill_value=0)\nprint(pivot_table)",
+      "language": "python",
+      "difficulty": "intermediate"
+    }
+  ],
+  "Data Science": [
+    {
+      "id": "ml-fund-py-b1",
+      "question": "A marketing team wants to understand customer demographics. Load a sample dataset containing `customer_id`, `age`, `gender`, `annual_income`, and `num_orders`. Display the first 5 rows and a summary of numerical statistics using Pandas.",
+      "solution": "import pandas as pd\nimport io\n\ndata = \"\"\"customer_id,age,gender,annual_income,num_orders\n1,34,Male,65000,5\n2,28,Female,42000,12\n3,45,Male,90000,3\n4,39,Female,78000,8\n5,22,Male,30000,1\n6,51,Female,110000,15\"\"\"\n\ndf = pd.read_csv(io.StringIO(data))\nprint(df.head())\nprint(df.describe())",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ml-fund-sql-b1",
+      "question": "As part of an initial data audit, determine the total number of unique customers registered in the `customers` table.",
+      "solution": "SELECT COUNT(DISTINCT id) AS total_customers\nFROM customers;",
+      "language": "sql",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "ml-fund-py-b2",
+      "question": "You're preparing data for a predictive model. Given a dataset `X` (features) and `y` (target), split it into training and testing sets with a test size of 30% and a random state for reproducibility (e.g., 42).",
+      "solution": "import pandas as pd\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.datasets import make_classification\n\n# Generate synthetic data for demonstration\nX, y = make_classification(n_samples=100, n_features=10, random_state=42)\nX = pd.DataFrame(X, columns=[f'feature_{i}' for i in range(10)])\ny = pd.Series(y, name='target')\n\n# Split the data\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)\n\nprint(f\"X_train shape: {X_train.shape}\")\nprint(f\"X_test shape: {X_test.shape}\")\nprint(f\"y_train shape: {y_train.shape}\")\nprint(f\"y_test shape: {y_test.shape}\")",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "fe-sql-b1",
+      "question": "To understand customer spending habits, calculate the average order amount for each customer. Display the `customer_id` and their average `total_amount`.",
+      "solution": "SELECT\n    c.id AS customer_id,\n    AVG(o.total_amount) AS average_order_value\nFROM customers AS c\nJOIN orders AS o\n    ON c.id = o.customer_id\nGROUP BY c.id;",
+      "language": "sql",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "me-py-b1",
+      "question": "You have a binary classification model's predictions (`y_pred`) and the true labels (`y_true`). Calculate the overall accuracy of the model using scikit-learn.",
+      "solution": "from sklearn.metrics import accuracy_score\nimport numpy as np\n\n# Sample data\ny_true = np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1])\ny_pred = np.array([0, 0, 0, 1, 0, 1, 1, 1, 0, 1])\n\n# Calculate accuracy\naccuracy = accuracy_score(y_true, y_pred)\nprint(f\"Model Accuracy: {accuracy:.2f}\")",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "fe-py-b1",
+      "question": "A dataset `df` contains `price` and `quantity` columns for product orders. Create a new feature called `order_value` which is the product of `price` and `quantity`.",
+      "solution": "import pandas as pd\nimport io\n\ndata = \"\"\"order_id,product,price,quantity\n101,Laptop,1200,1\n102,Mouse,25,2\n103,Keyboard,75,1\n104,Monitor,300,2\n105,Webcam,50,3\"\"\"\n\ndf = pd.read_csv(io.StringIO(data))\n\ndf['order_value'] = df['price'] * df['quantity']\nprint(df.head())",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "pm-prep-sql-b1",
+      "question": "A marketing campaign targets active customers. Identify all customers who have placed at least one order in the last 30 days. Display their `customer_id` and the `order_date` of their latest order within this period. Assume today's date is '2023-10-26'.",
+      "solution": "SELECT\n    c.id AS customer_id,\n    MAX(o.order_date) AS latest_order_date\nFROM customers AS c\nJOIN orders AS o\n    ON c.id = o.customer_id\nWHERE o.order_date >= DATE('2023-10-26', '-30 days')\nGROUP BY c.id\nHAVING MAX(o.order_date) >= DATE('2023-10-26', '-30 days');",
+      "language": "sql",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "pm-py-i1",
+      "question": "You're building a simple predictive model for house prices. Given a dataset `X` (features like square footage, number of bedrooms) and `y` (target price), train a Linear Regression model using scikit-learn.",
+      "solution": "import pandas as pd\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.metrics import mean_squared_error\nimport numpy as np\n\n# Generate synthetic data\nnp.random.seed(42)\nX = pd.DataFrame({\n    'square_footage': np.random.randint(1000, 3000, 100),\n    'num_bedrooms': np.random.randint(2, 5, 100),\n    'age_years': np.random.randint(5, 50, 100)\n})\ny = 50 * X['square_footage'] + 20000 * X['num_bedrooms'] - \\\n    1000 * X['age_years'] + np.random.normal(0, 50000, 100)\ny = y.astype(int) # Make prices integers\n\n# Split data\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n\n# Train Linear Regression model\nmodel = LinearRegression()\nmodel.fit(X_train, y_train)\n\n# Evaluate (optional, but good practice)\ny_pred = model.predict(X_test)\nrmse = np.sqrt(mean_squared_error(y_test, y_pred))\nprint(f\"Linear Regression Model Trained. RMSE on test set: ${rmse:,.2f}\")",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "fe-sql-i1",
+      "question": "A critical metric for understanding customer value is their Customer Lifetime Value (CLTV). Calculate a simple approximation of CLTV for each customer, defined as the total sum of all their order amounts. Display `customer_id` and their `total_spending`.",
+      "solution": "SELECT\n    c.id AS customer_id,\n    SUM(o.total_amount) AS total_spending\nFROM customers AS c\nJOIN orders AS o\n    ON c.id = o.customer_id\nGROUP BY c.id\nORDER BY total_spending DESC;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "me-py-i1",
+      "question": "For a binary classification model, beyond just accuracy, you need to understand its performance in terms of false positives and false negatives. Given `y_true` and `y_pred`, calculate and print the precision, recall, and F1-score.",
+      "solution": "from sklearn.metrics import precision_score, recall_score, f1_score\nimport numpy as np\n\n# Sample data\ny_true = np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1])\ny_pred = np.array([0, 0, 0, 1, 0, 1, 1, 1, 0, 1])\n\n# Calculate metrics\nprecision = precision_score(y_true, y_pred)\nrecall = recall_score(y_true, y_pred)\nf1 = f1_score(y_true, y_pred)\n\nprint(f\"Precision: {precision:.2f}\")\nprint(f\"Recall: {recall:.2f}\")\nprint(f\"F1-Score: {f1:.2f}\")",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "fe-py-i2",
+      "question": "Your dataset `df` contains a categorical feature `product_category`. One-hot encode this feature to prepare it for a machine learning model using Pandas.",
+      "solution": "import pandas as pd\nimport io\n\ndata = \"\"\"order_id,product_category,price\n1,Electronics,1200\n2,Books,25\n3,Electronics,75\n4,Home,300\n5,Books,50\"\"\"\n\ndf = pd.read_csv(io.StringIO(data))\n\ndf_encoded = pd.get_dummies(df, columns=['product_category'], prefix='category')\nprint(df_encoded.head())",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ml-fund-sql-i1",
+      "question": "The sales team wants to know which product categories are generating the most revenue. Identify the top 5 product categories by their total sales amount. Display the `category` name and `total_sales`.",
+      "solution": "SELECT\n    p.category,\n    SUM(o.total_amount) AS total_sales\nFROM orders AS o\nJOIN products AS p\n    ON o.product_id = p.id\nGROUP BY p.category\nORDER BY total_sales DESC\nLIMIT 5;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "pm-py-i2",
+      "question": "You are tasked with classifying customer segments. Given a dataset `X` (features) and `y` (target segments), train a K-Nearest Neighbors (KNN) classifier with `n_neighbors=5` using scikit-learn.",
+      "solution": "import pandas as pd\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.neighbors import KNeighborsClassifier\nfrom sklearn.metrics import accuracy_score\nfrom sklearn.datasets import make_classification\n\n# Generate synthetic data\nX, y = make_classification(n_samples=100, n_features=4, n_classes=2, random_state=42)\nX = pd.DataFrame(X, columns=[f'feature_{i}' for i in range(4)])\ny = pd.Series(y, name='target')\n\n# Split data\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n\n# Train KNN classifier\nknn = KNeighborsClassifier(n_neighbors=5)\nknn.fit(X_train, y_train)\n\n# Evaluate (optional)\ny_pred = knn.predict(X_test)\naccuracy = accuracy_score(y_test, y_pred)\nprint(f\"KNN Classifier Trained. Accuracy on test set: {accuracy:.2f}\")",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "me-py-i2",
+      "question": "Visualize the performance of a binary classification model using a confusion matrix. Given `y_true` and `y_pred`, generate and display a confusion matrix plot using scikit-learn and matplotlib.",
+      "solution": "import matplotlib.pyplot as plt\nfrom sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay\nimport numpy as np\n\n# Sample data\ny_true = np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0])\ny_pred = np.array([0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0])\n\n# Calculate confusion matrix\ncm = confusion_matrix(y_true, y_pred)\n\n# Display confusion matrix\ndisp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[0, 1])\ndisp.plot()\nplt.title(\"Confusion Matrix\")\nplt.show() # In a real environment, this would display the plot. \n           # For an automated test, the plot generation is enough.",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "fe-sql-i2",
+      "question": "The product team wants to understand purchasing behavior per category. Calculate the average quantity of products ordered for each `product_category`.",
+      "solution": "SELECT\n    p.category,\n    AVG(o.quantity) AS average_quantity_ordered\nFROM orders AS o\nJOIN products AS p\n    ON o.product_id = p.id\nGROUP BY p.category\nORDER BY average_quantity_ordered DESC;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "pm-py-i3",
+      "question": "Data scaling is crucial for many ML algorithms. Given a numerical feature dataset `X`, apply `StandardScaler` from scikit-learn to standardize the features.",
+      "solution": "import pandas as pd\nfrom sklearn.preprocessing import StandardScaler\nimport numpy as np\n\n# Generate synthetic data\nnp.random.seed(42)\nX = pd.DataFrame({\n    'feature_1': np.random.rand(100) * 1000,\n    'feature_2': np.random.randint(1, 100, 100),\n    'feature_3': np.random.normal(50, 10, 100)\n})\n\n# Initialize and apply StandardScaler\nscaler = StandardScaler()\nX_scaled = scaler.fit_transform(X)\n\n# Convert back to DataFrame for better viewing (optional)\nX_scaled_df = pd.DataFrame(X_scaled, columns=X.columns)\nprint(\"Original data head:\")\nprint(X.head())\nprint(\"\\nScaled data head:\")\nprint(X_scaled_df.head())\nprint(\"\\nMean of scaled data (should be close to 0):\")\nprint(X_scaled_df.mean())\nprint(\"\\nStandard deviation of scaled data (should be close to 1):\")\nprint(X_scaled_df.std())",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "ml-fund-py-i1",
+      "question": "Your dataset `df` has missing values in the `age` column. Fill these missing values using the mean of the existing `age` values.",
+      "solution": "import pandas as pd\nimport io\nimport numpy as np\n\ndata = \"\"\"customer_id,age,annual_income\n1,34,65000\n2,28,42000\n3,,90000\n4,39,78000\n5,22,30000\n6,,110000\"\"\"\n\ndf = pd.read_csv(io.StringIO(data))\n\n# Fill missing 'age' values with the mean\nmean_age = df['age'].mean()\ndf['age'].fillna(mean_age, inplace=True)\nprint(df.head())\nprint(\"\\nMissing values after imputation:\")\nprint(df.isnull().sum())",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "fe-sql-i3",
+      "question": "To gauge customer loyalty, calculate the number of distinct products each customer has ordered. Display `customer_id` and `distinct_products_ordered`.",
+      "solution": "SELECT\n    c.id AS customer_id,\n    COUNT(DISTINCT o.product_id) AS distinct_products_ordered\nFROM customers AS c\nJOIN orders AS o\n    ON c.id = o.customer_id\nGROUP BY c.id\nORDER BY distinct_products_ordered DESC;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "fe-sql-i4",
+      "question": "Analyze customer engagement shortly after signup. For each customer, calculate how many orders they placed within 30 days of their `signup_date`. Display `customer_id` and `orders_in_first_30_days`.",
+      "solution": "SELECT\n    c.id AS customer_id,\n    COUNT(o.id) AS orders_in_first_30_days\nFROM customers AS c\nJOIN orders AS o\n    ON c.id = o.customer_id\nWHERE o.order_date <= DATE(c.signup_date, '+30 days') AND o.order_date >= c.signup_date\nGROUP BY c.id\nORDER BY orders_in_first_30_days DESC;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "fe-py-i3",
+      "question": "Create an interaction feature in a DataFrame `df` by multiplying the `feature_A` and `feature_B` columns, naming the new column `interaction_AB`.",
+      "solution": "import pandas as pd\nimport io\n\ndata = \"\"\"id,feature_A,feature_B,target\n1,10,2,20\n2,5,8,40\n3,12,1,12\n4,7,5,35\n5,8,3,24\"\"\"\n\ndf = pd.read_csv(io.StringIO(data))\n\ndf['interaction_AB'] = df['feature_A'] * df['feature_B']\nprint(df.head())",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "me-py-a1",
+      "question": "To get a more robust estimate of model performance, implement 5-fold cross-validation for a Logistic Regression model on a given dataset `X` and `y`. Report the average accuracy using scikit-learn.",
+      "solution": "import pandas as pd\nfrom sklearn.model_selection import KFold, cross_val_score\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.datasets import make_classification\nimport numpy as np\n\n# Generate synthetic data\nX, y = make_classification(n_samples=100, n_features=10, n_classes=2, random_state=42)\nX = pd.DataFrame(X, columns=[f'feature_{i}' for i in range(10)])\ny = pd.Series(y, name='target')\n\n# Initialize the model and KFold cross-validator\nmodel = LogisticRegression(solver='liblinear', random_state=42)\nkf = KFold(n_splits=5, shuffle=True, random_state=42)\n\n# Perform cross-validation\ncv_scores = cross_val_score(model, X, y, cv=kf, scoring='accuracy')\n\nprint(f\"Cross-validation accuracies: {cv_scores}\")\nprint(f\"Average accuracy: {np.mean(cv_scores):.2f}\")\nprint(f\"Standard deviation of accuracies: {np.std(cv_scores):.2f}\")",
+      "language": "python",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "fe-sql-a1",
+      "question": "Calculate the Recency, Frequency, and Monetary (RFM) components for each customer.\n-   **Recency:** Days since the last order (assume '2023-10-26' as today).\n-   **Frequency:** Total number of orders.\n-   **Monetary:** Total spending.\nDisplay `customer_id`, `recency_days`, `frequency`, and `monetary`.",
+      "solution": "SELECT\n    c.id AS customer_id,\n    JULIANDAY('2023-10-26') - JULIANDAY(MAX(o.order_date)) AS recency_days,\n    COUNT(DISTINCT o.id) AS frequency,\n    SUM(o.total_amount) AS monetary\nFROM customers AS c\nJOIN orders AS o\n    ON c.id = o.customer_id\nGROUP BY c.id\nORDER BY recency_days ASC, frequency DESC, monetary DESC;",
+      "language": "sql",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "pm-py-a1",
+      "question": "You need to optimize the hyperparameters of a Decision Tree Classifier. Use `GridSearchCV` to find the best `max_depth` (consider values [3, 5, 7]) and `min_samples_split` (consider values [2, 5, 10]). Report the best parameters and the best score.",
+      "solution": "import pandas as pd\nfrom sklearn.model_selection import GridSearchCV, train_test_split\nfrom sklearn.tree import DecisionTreeClassifier\nfrom sklearn.datasets import make_classification\nimport numpy as np\n\n# Generate synthetic data\nX, y = make_classification(n_samples=100, n_features=10, n_classes=2, random_state=42)\nX = pd.DataFrame(X, columns=[f'feature_{i}' for i in range(10)])\ny = pd.Series(y, name='target')\n\n# Define the model\ndtree = DecisionTreeClassifier(random_state=42)\n\n# Define the parameter grid\nparam_grid = {\n    'max_depth': [3, 5, 7],\n    'min_samples_split': [2, 5, 10]\n}\n\n# Initialize GridSearchCV\ngrid_search = GridSearchCV(dtree, param_grid, cv=5, scoring='accuracy', n_jobs=-1)\n\n# Fit GridSearchCV to the data\ngrid_search.fit(X, y)\n\n# Report best parameters and score\nprint(f\"Best parameters: {grid_search.best_params_}\")\nprint(f\"Best cross-validation accuracy: {grid_search.best_score_:.2f}\")",
+      "language": "python",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "fe-py-a1",
+      "question": "Create a custom transformer using `FunctionTransformer` to apply a logarithmic transformation (base e) to all numerical features in a DataFrame. Handle potential issues with zero or negative values by adding 1 before taking the logarithm (`np.log1p`).",
+      "solution": "import pandas as pd\nfrom sklearn.preprocessing import FunctionTransformer\nimport numpy as np\nimport io\n\ndata = \"\"\"id,feature_A,feature_B,feature_C\n1,10,20,5\n2,50,15,1\n3,100,5,0\n4,1,30,10\n5,20,25,2\"\"\"\n\ndf = pd.read_csv(io.StringIO(data))\n\n# Define the custom log transformation function\ndef log_transform(X):\n    # Add 1 to handle zero or non-positive values, then take natural log\n    return np.log1p(X)\n\n# Create a FunctionTransformer\nlog_transformer = FunctionTransformer(log_transform, validate=True)\n\n# Apply the transformation to the numerical columns\n# Assuming all columns except 'id' are numerical features\nnumerical_features = df.columns.drop('id')\ndf_transformed_values = log_transformer.fit_transform(df[numerical_features])\n\n# Convert the transformed values back to a DataFrame\ndf_transformed = pd.DataFrame(df_transformed_values, columns=numerical_features)\ndf_transformed = pd.concat([df['id'], df_transformed], axis=1)\n\nprint(\"Original DataFrame head:\")\nprint(df.head())\nprint(\"\\nTransformed DataFrame head (log1p applied):\")\nprint(df_transformed.head())",
+      "language": "python",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "pm-prep-sql-a1",
+      "question": "Create a SQL `VIEW` named `customer_churn_features` that provides aggregated features for each customer, useful for churn prediction. This view should include:\n-   `customer_id`\n-   `total_orders` (count of all orders)\n-   `total_spending` (sum of all order amounts)\n-   `days_since_last_order` (difference in days between '2023-10-26' and their most recent order date).\n-   `average_order_value`\n-   `distinct_products_bought`",
+      "solution": "CREATE VIEW customer_churn_features AS\nSELECT\n    c.id AS customer_id,\n    COUNT(o.id) AS total_orders,\n    SUM(o.total_amount) AS total_spending,\n    JULIANDAY('2023-10-26') - JULIANDAY(MAX(o.order_date)) AS days_since_last_order,\n    AVG(o.total_amount) AS average_order_value,\n    COUNT(DISTINCT o.product_id) AS distinct_products_bought\nFROM customers AS c\nLEFT JOIN orders AS o\n    ON c.id = o.customer_id\nGROUP BY c.id;",
+      "language": "sql",
+      "difficulty": "advanced"
+    }
+  ],
+  "General Programming": [
+    {
+      "id": "py-b-01",
+      "question": "You have a list of daily sales figures for a small shop. Calculate the total sales for the week. sales = [150.75, 200.50, 120.00, 300.25, 180.00, 250.00, 190.50]",
+      "solution": "sales = [150.75, 200.50, 120.00, 300.25, 180.00, 250.00, 190.50]\ntotal_sales = sum(sales)\n# print(f\"Total sales: {total_sales:.2f}\")",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "py-b-02",
+      "question": "A customer's first name is 'john' and last name is 'doe'. Combine them into a full name, ensuring both parts are properly capitalized (e.g., 'John Doe').",
+      "solution": "first_name = 'john'\nlast_name = 'doe'\nfull_name = f\"{first_name.title()} {last_name.title()}\"\n# print(f\"Full name: {full_name}\")",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "py-b-03",
+      "question": "You have a dictionary representing a product. Extract and print its price. product = {'id': 'P101', 'name': 'Laptop', 'category': 'Electronics', 'price': 1200.00, 'stock': 50}",
+      "solution": "product = {'id': 'P101', 'name': 'Laptop', 'category': 'Electronics', 'price': 1200.00, 'stock': 50}\nproduct_price = product['price']\n# print(f\"Product price: ${product_price:.2f}\")",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "py-b-04",
+      "question": "A list contains product prices: `prices = [10.50, 25.00, 5.75, 30.20, 15.00, 45.00]`. Filter this list to create a new list containing only prices greater than $20.00.",
+      "solution": "prices = [10.50, 25.00, 5.75, 30.20, 15.00, 45.00]\nhigh_prices = [price for price in prices if price > 20.00]\n# print(f\"Prices > $20: {high_prices}\")",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "py-b-05",
+      "question": "Calculate the average user rating from a list of ratings: `ratings = [4, 5, 3, 4, 5, 2, 4, 5]`. Handle the case where the list might be empty to avoid division by zero.",
+      "solution": "ratings = [4, 5, 3, 4, 5, 2, 4, 5]\naverage_rating = sum(ratings) / len(ratings) if ratings else 0\n# print(f\"Average rating: {average_rating:.2f}\")",
+      "language": "python",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sql-b-01",
+      "question": "As a marketing specialist, you need a list of all customer names and their email addresses. Retrieve these two columns from the `customers` table.",
+      "solution": "SELECT name, email FROM customers;",
+      "language": "sql",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sql-b-02",
+      "question": "A store manager wants to see all products that fall under the 'Electronics' category. Select all columns for products where the `category` is 'Electronics'.",
+      "solution": "SELECT id, name, category, price, stock FROM products WHERE category = 'Electronics';",
+      "language": "sql",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sql-b-03",
+      "question": "You need to quickly check the total number of orders placed in the system. Count all entries in the `orders` table.",
+      "solution": "SELECT COUNT(*) FROM orders;",
+      "language": "sql",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "py-i-01",
+      "question": "You have a list of product dictionaries. Group them by their 'category' into a new dictionary where keys are categories and values are lists of product names. products = [\n    {'id': 'P1', 'name': 'Laptop', 'category': 'Electronics'},\n    {'id': 'P2', 'name': 'Keyboard', 'category': 'Electronics'},\n    {'id': 'P3', 'name': 'Desk Chair', 'category': 'Furniture'},\n    {'id': 'P4', 'name': 'Monitor', 'category': 'Electronics'},\n    {'id': 'P5', 'name': 'Coffee Table', 'category': 'Furniture'}\n]",
+      "solution": "from collections import defaultdict\n\nproducts = [\n    {'id': 'P1', 'name': 'Laptop', 'category': 'Electronics'},\n    {'id': 'P2', 'name': 'Keyboard', 'category': 'Electronics'},\n    {'id': 'P3', 'name': 'Desk Chair', 'category': 'Furniture'},\n    {'id': 'P4', 'name': 'Monitor', 'category': 'Electronics'},\n    {'id': 'P5', 'name': 'Coffee Table', 'category': 'Furniture'}\n]\n\nproducts_by_category = defaultdict(list)\nfor product in products:\n    products_by_category[product['category']].append(product['name'])\n# print(products_by_category)",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "py-i-02",
+      "question": "From a log string `log_entry = 'Processed order PROD-1234 for customer CUST-5678 on 2023-10-26. Item SKU-9012.'`, extract all the numeric IDs (e.g., 1234, 5678, 9012).",
+      "solution": "import re\n\nlog_entry = 'Processed order PROD-1234 for customer CUST-5678 on 2023-10-26. Item SKU-9012.'\nids = [int(i) for i in re.findall(r'\\d+', log_entry)]\n# print(f\"Extracted IDs: {ids}\")",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "py-i-03",
+      "question": "Given a list of customer countries from recent orders: `customer_countries = ['USA', 'Canada', 'Mexico', 'USA', 'Canada', 'USA', 'Germany', 'USA']`. Find the country that appears most frequently.",
+      "solution": "from collections import Counter\n\ncustomer_countries = ['USA', 'Canada', 'Mexico', 'USA', 'Canada', 'USA', 'Germany', 'USA']\ncountry_counts = Counter(customer_countries)\nmost_frequent_country = country_counts.most_common(1)[0][0]\n# print(f\"Most frequent country: {most_frequent_country}\")",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "py-i-04",
+      "question": "You have a list of order dictionaries. Calculate the total revenue from orders that have a 'status' of 'completed'. orders = [\n    {'id': 'O1', 'total_amount': 150.00, 'status': 'completed'},\n    {'id': 'O2', 'total_amount': 200.00, 'status': 'pending'},\n    {'id': 'O3', 'total_amount': 300.00, 'status': 'completed'},\n    {'id': 'O4', 'total_amount': 75.00, 'status': 'cancelled'},\n    {'id': 'O5', 'total_amount': 120.00, 'status': 'completed'}\n]",
+      "solution": "orders = [\n    {'id': 'O1', 'total_amount': 150.00, 'status': 'completed'},\n    {'id': 'O2', 'total_amount': 200.00, 'status': 'pending'},\n    {'id': 'O3', 'total_amount': 300.00, 'status': 'completed'},\n    {'id': 'O4', 'total_amount': 75.00, 'status': 'cancelled'},\n    {'id': 'O5', 'total_amount': 120.00, 'status': 'completed'}\n]\n\ncompleted_revenue = sum(\n    order['total_amount'] for order in orders if order['status'] == 'completed'\n)\n# print(f\"Total completed revenue: ${completed_revenue:.2f}\")",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "py-i-05",
+      "question": "Combine two dictionaries, `product_base = {'name': 'Smartphone', 'category': 'Electronics', 'stock': 100}` and `product_updates = {'price': 699.99, 'stock': 80, 'color': 'Black'}`. If keys exist in both, `product_updates` should override `product_base` values.",
+      "solution": "product_base = {'name': 'Smartphone', 'category': 'Electronics', 'stock': 100}\nproduct_updates = {'price': 699.99, 'stock': 80, 'color': 'Black'}\n\nmerged_product = {**product_base, **product_updates}\n# print(merged_product)",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "py-i-06",
+      "question": "Write a function `are_anagrams(word1, word2)` that returns `True` if two strings are anagrams of each other, ignoring case and spaces, otherwise `False`. Example: 'Listen' and 'Silent'.",
+      "solution": "def are_anagrams(word1, word2):\n    clean_word1 = sorted(list(word1.replace(' ', '').lower()))\n    clean_word2 = sorted(list(word2.replace(' ', '').lower()))\n    return clean_word1 == clean_word2\n\n# print(f\"'Listen', 'Silent' are anagrams: {are_anagrams('Listen', 'Silent')}\")\n# print(f\"'Debit card', 'Bad credit' are anagrams: {are_anagrams('Debit card', 'Bad credit')}\")\n# print(f\"'Hello', 'World' are anagrams: {are_anagrams('Hello', 'World')}\")",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "py-i-07",
+      "question": "Simulate reading a CSV file (represented as a list of strings, each line a row) and parse it into a list of dictionaries, using the first line as headers. file_content = [\n    'id,name,email',\n    '1,Alice,alice@example.com',\n    '2,Bob,bob@example.com'\n]",
+      "solution": "file_content = [\n    'id,name,email',\n    '1,Alice,alice@example.com',\n    '2,Bob,bob@example.com'\n]\n\nlines = file_content\nparsed_data = []\nif lines:\n    headers = lines[0].strip().split(',')\n    for line in lines[1:]:\n        values = line.strip().split(',')\n        parsed_data.append(dict(zip(headers, values)))\n# print(parsed_data)",
+      "language": "python",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "sql-i-01",
+      "question": "For each customer, display their `name` and the `total number of orders` they have placed. Include customers who haven't placed any orders (display 0 orders).",
+      "solution": "SELECT\n  c.name,\n  COUNT(o.id) AS total_orders\nFROM\n  customers AS c\nLEFT JOIN\n  orders AS o ON c.id = o.customer_id\nGROUP BY\n  c.id, c.name\nORDER BY\n  c.name;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "sql-i-02",
+      "question": "Find the `top 5 products` by `price`. Display the product `name` and `price`, ordered from most expensive to least expensive.",
+      "solution": "SELECT name, price FROM products ORDER BY price DESC LIMIT 5;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "sql-i-03",
+      "question": "Identify and list the `names` of customers who have `never placed an order`.",
+      "solution": "SELECT c.name\nFROM customers AS c\nLEFT JOIN orders AS o ON c.id = o.customer_id\nWHERE o.id IS NULL;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "sql-i-04",
+      "question": "Count the total number of orders placed in `March 2023`. Assume `order_date` is stored as a TEXT 'YYYY-MM-DD' string.",
+      "solution": "SELECT COUNT(*)\nFROM orders\nWHERE strftime('%Y-%m', order_date) = '2023-03';",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "sql-i-05",
+      "question": "List all product `categories` that have `more than 3 products` in stock. Display the category and the count of products.",
+      "solution": "SELECT\n  category,\n  COUNT(id) AS product_count\nFROM\n  products\nGROUP BY\n  category\nHAVING\n  COUNT(id) > 3\nORDER BY\n  product_count DESC;",
+      "language": "sql",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "py-a-01",
+      "question": "Implement a function `flatten_list(nested_list)` that takes a deeply nested list and returns a single, flattened list containing all elements. Example: `[1, [2, 3], [4, [5, 6]]]` should become `[1, 2, 3, 4, 5, 6]`.",
+      "solution": "def flatten_list(nested_list):\n    flat_list = []\n    for item in nested_list:\n        if isinstance(item, list):\n            flat_list.extend(flatten_list(item))\n        else:\n            flat_list.append(item)\n    return flat_list\n\n# print(f\"Flattened: {flatten_list([1, [2, 3], [4, [5, 6]]])}\")\n# print(f\"Flattened: {flatten_list([1, 2, [3, [4, 5], 6], 7])}\")\n# print(f\"Flattened: {flatten_list([])}\")",
+      "language": "python",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "py-a-02",
+      "question": "You are given a list of integers `nums`. Find all unique triplets `[a, b, c]` in `nums` such that `a + b + c = 0`. Each triplet should contain unique numbers (indices don't matter).",
+      "solution": "def three_sum(nums):\n    nums.sort()\n    result = []\n    n = len(nums)\n    for i in range(n - 2):\n        if i > 0 and nums[i] == nums[i-1]:\n            continue\n        left, right = i + 1, n - 1\n        while left < right:\n            current_sum = nums[i] + nums[left] + nums[right]\n            if current_sum == 0:\n                result.append([nums[i], nums[left], nums[right]])\n                while left < right and nums[left] == nums[left+1]:\n                    left += 1\n                while left < right and nums[right] == nums[right-1]:\n                    right -= 1\n                left += 1\n                right -= 1\n            elif current_sum < 0:\n                left += 1\n            else:\n                right -= 1\n    return result\n\n# print(f\"Triplets for [-1, 0, 1, 2, -1, -4]: {three_sum([-1, 0, 1, 2, -1, -4])}\")\n# print(f\"Triplets for [0, 1, 1]: {three_sum([0, 1, 1])}\")\n# print(f\"Triplets for [0, 0, 0]: {three_sum([0, 0, 0])}\")",
+      "language": "python",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "py-a-03",
+      "question": "Implement a simple `LRUCache` class with a fixed `capacity`. It should have methods `get(key)` (returns value or -1 if not found, updates usage) and `put(key, value)` (adds/updates item, evicts least recently used if capacity is exceeded). Use Python's `collections.OrderedDict` for simplicity.",
+      "solution": "from collections import OrderedDict\n\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.cache = OrderedDict()\n        self.capacity = capacity\n\n    def get(self, key: int) -> int:\n        if key not in self.cache:\n            return -1\n        # Move the accessed item to the end (most recently used)\n        self.cache.move_to_end(key)\n        return self.cache[key]\n\n    def put(self, key: int, value: int) -> None:\n        if key in self.cache:\n            # Update and move to end\n            self.cache[key] = value\n            self.cache.move_to_end(key)\n        else:\n            if len(self.cache) >= self.capacity:\n                # Evict the least recently used item (first item)\n                self.cache.popitem(last=False)\n            self.cache[key] = value\n\n# Example Usage:\n# cache = LRUCache(2)\n# cache.put(1, 1)    # cache is {1: 1}\n# cache.put(2, 2)    # cache is {1: 1, 2: 2}\n# print(f\"Get 1: {cache.get(1)}\") # returns 1; cache is {2: 2, 1: 1}\n# cache.put(3, 3)    # LRU key 2 is evicted, cache is {1: 1, 3: 3}\n# print(f\"Get 2: {cache.get(2)}\") # returns -1 (not found)\n# cache.put(4, 4)    # LRU key 1 is evicted, cache is {3: 3, 4: 4}\n# print(f\"Get 1: {cache.get(1)}\") # returns -1 (not found)\n# print(f\"Get 3: {cache.get(3)}\") # returns 3; cache is {4: 4, 3: 3}\n# print(f\"Get 4: {cache.get(4)}\") # returns 4; cache is {3: 3, 4: 4}",
+      "language": "python",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "sql-a-01",
+      "question": "Calculate a `running total` of `total_amount` for each customer's orders, ordered by `order_date`. Display `customer_id`, `order_id`, `order_date`, `total_amount`, and the `running_total`.",
+      "solution": "SELECT\n  customer_id,\n  id AS order_id,\n  order_date,\n  total_amount,\n  SUM(total_amount) OVER (\n    PARTITION BY customer_id\n    ORDER BY order_date\n  ) AS running_total\nFROM\n  orders\nORDER BY\n  customer_id, order_date;",
+      "language": "sql",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "sql-a-02",
+      "question": "Identify `customers` who have placed an order for `at least one product from every unique product category` available in the `products` table.",
+      "solution": "WITH CustomerOrderCategories AS (\n  SELECT DISTINCT\n    o.customer_id,\n    p.category\n  FROM\n    orders AS o\n  JOIN\n    products AS p ON o.product_id = p.id\n),\nTotalDistinctCategories AS (\n  SELECT COUNT(DISTINCT category) AS total_count\n  FROM products\n)\nSELECT\n  c.id AS customer_id,\n  c.name AS customer_name\nFROM\n  customers AS c\nJOIN\n  CustomerOrderCategories AS coc ON c.id = coc.customer_id\nGROUP BY\n  c.id, c.name\nHAVING\n  COUNT(DISTINCT coc.category) = (SELECT total_count FROM TotalDistinctCategories);",
+      "language": "sql",
+      "difficulty": "advanced"
+    }
+  ]
+}

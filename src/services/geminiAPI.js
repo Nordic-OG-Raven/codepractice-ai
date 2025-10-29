@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { generateExercisesPrompt, generateHintPrompt, generateFeedbackPrompt } from './prompts'
+import { hasTokensRemaining, addTokenUsage, getTokenUsage } from '../utils/rateLimit'
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY
 
@@ -41,6 +42,12 @@ export const generateExercises = async (category, level = 1) => {
     return exercises
   } catch (error) {
     console.error('Error generating exercises:', error)
+    
+    // Check if it's a model not found error (404)
+    if (error.message && error.message.includes('404') && error.message.includes('not found')) {
+      throw new Error('My sincere apologies! Google changed their Gemini model names since I last updated this app. Please reach out via the contact form at jonashaahr.com and I\'ll fix it ASAP. - Jonas')
+    }
+    
     throw new Error(`Failed to generate exercises: ${error.message}`)
   }
 }
@@ -53,6 +60,12 @@ export const getHint = async (question, userAnswer, correctSolution) => {
     throw new Error('Gemini API not configured')
   }
 
+  // Check token budget (estimate ~2000 tokens for a hint)
+  if (!hasTokensRemaining(2000)) {
+    const { remaining } = getTokenUsage()
+    throw new Error(`Token budget reached! You have ${remaining.toLocaleString()} Gemini tokens remaining. Try again in 24 hours.`)
+  }
+
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
     const prompt = generateHintPrompt(question, userAnswer, correctSolution)
@@ -61,9 +74,21 @@ export const getHint = async (question, userAnswer, correctSolution) => {
     const response = await result.response
     const hint = response.text().trim()
     
+    // Track actual token usage
+    const tokensUsed = response.usageMetadata?.totalTokenCount || 0
+    if (tokensUsed > 0) {
+      addTokenUsage(tokensUsed)
+    }
+    
     return hint
   } catch (error) {
     console.error('Error getting hint:', error)
+    
+    // Check if it's a model not found error (404)
+    if (error.message && error.message.includes('404') && error.message.includes('not found')) {
+      throw new Error('My sincere apologies! Google changed their Gemini model names since I last updated this app. Please reach out via the contact form at jonashaahr.com and I\'ll fix it ASAP. - Jonas')
+    }
+    
     throw new Error('Failed to get hint')
   }
 }
@@ -76,6 +101,12 @@ export const getFeedback = async (question, userAnswer, correctSolution, errorMe
     throw new Error('Gemini API not configured')
   }
 
+  // Check token budget (estimate ~2000 tokens for feedback)
+  if (!hasTokensRemaining(2000)) {
+    const { remaining } = getTokenUsage()
+    throw new Error(`Token budget reached! You have ${remaining.toLocaleString()} Gemini tokens remaining. Try again in 24 hours.`)
+  }
+
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
     const prompt = generateFeedbackPrompt(question, userAnswer, correctSolution, errorMessage)
@@ -84,9 +115,21 @@ export const getFeedback = async (question, userAnswer, correctSolution, errorMe
     const response = await result.response
     const feedback = response.text().trim()
     
+    // Track actual token usage
+    const tokensUsed = response.usageMetadata?.totalTokenCount || 0
+    if (tokensUsed > 0) {
+      addTokenUsage(tokensUsed)
+    }
+    
     return feedback
   } catch (error) {
     console.error('Error getting feedback:', error)
+    
+    // Check if it's a model not found error (404)
+    if (error.message && error.message.includes('404') && error.message.includes('not found')) {
+      throw new Error('My sincere apologies! Google changed their Gemini model names since I last updated this app. Please reach out via the contact form at jonashaahr.com and I\'ll fix it ASAP. - Jonas')
+    }
+    
     throw new Error('Failed to get feedback')
   }
 }
