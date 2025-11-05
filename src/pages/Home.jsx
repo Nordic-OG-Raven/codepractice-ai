@@ -12,10 +12,10 @@ const Home = ({ onSelectCategory, onReviewSession }) => {
     <div className="min-h-screen p-4 pb-8">
       {/* Header */}
       <div className="max-w-2xl mx-auto mb-8 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+        <h1 className="text-3xl md:text-4xl font-bold text-brand-text mb-2">
           CodePractice.AI
         </h1>
-        <p className="text-gray-600">
+        <p className="text-brand-text-secondary">
           Practice Python & SQL with AI-powered feedback
         </p>
       </div>
@@ -23,11 +23,11 @@ const Home = ({ onSelectCategory, onReviewSession }) => {
       {/* Level Summary */}
       <div className="max-w-2xl mx-auto mb-6">
         <div className="card">
-          <h2 className="text-lg font-semibold text-gray-800 mb-3">Your Progress</h2>
+          <h2 className="text-lg font-semibold text-brand-text mb-3">Your Progress</h2>
           <div className="space-y-2">
             {Object.entries(userLevel).map(([category, level]) => (
               <div key={category} className="flex justify-between items-center">
-                <span className="text-sm text-gray-700">{category}</span>
+                <span className="text-sm text-brand-text-secondary">{category}</span>
                 <LevelBadge level={level} category={category} />
               </div>
             ))}
@@ -37,13 +37,13 @@ const Home = ({ onSelectCategory, onReviewSession }) => {
 
       {/* Toggle between Categories and History */}
       <div className="max-w-2xl mx-auto mb-4">
-        <div className="flex gap-2 bg-gray-200 rounded-lg p-1">
+        <div className="flex gap-2 bg-brand-surface border border-brand-border rounded-lg p-1">
           <button
             onClick={() => setShowHistory(false)}
             className={`flex-1 py-2 rounded-md font-medium transition-all ${
               !showHistory 
-                ? 'bg-white text-gray-800 shadow' 
-                : 'text-gray-600'
+                ? 'bg-brand-primary text-white shadow' 
+                : 'text-brand-text-secondary hover:text-brand-text'
             }`}
           >
             📚 Practice
@@ -52,8 +52,8 @@ const Home = ({ onSelectCategory, onReviewSession }) => {
             onClick={() => setShowHistory(true)}
             className={`flex-1 py-2 rounded-md font-medium transition-all ${
               showHistory 
-                ? 'bg-white text-gray-800 shadow' 
-                : 'text-gray-600'
+                ? 'bg-brand-primary text-white shadow' 
+                : 'text-brand-text-secondary hover:text-brand-text'
             }`}
           >
             📖 History
@@ -65,14 +65,14 @@ const Home = ({ onSelectCategory, onReviewSession }) => {
       <div className="max-w-2xl mx-auto">
         {!showHistory ? (
           <>
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            <h2 className="text-xl font-semibold text-brand-text mb-4">
               Choose Your Focus
             </h2>
             <CategorySelector onSelect={onSelectCategory} />
           </>
         ) : (
           <>
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            <h2 className="text-xl font-semibold text-brand-text mb-4">
               Past Sessions
             </h2>
             <SessionHistory onReviewSession={onReviewSession} />
@@ -81,7 +81,7 @@ const Home = ({ onSelectCategory, onReviewSession }) => {
       </div>
 
       {/* Footer */}
-      <div className="max-w-2xl mx-auto mt-8 text-center text-xs text-gray-500">
+      <div className="max-w-2xl mx-auto mt-8 text-center text-xs text-brand-text-muted">
         <p>Built with Gemini 1.5 Flash • Mobile-First Design</p>
       </div>
     </div>

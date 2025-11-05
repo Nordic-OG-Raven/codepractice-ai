@@ -8,7 +8,7 @@
   }
   
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-brand-bg text-brand-text;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
       sans-serif;
@@ -29,24 +29,24 @@
   }
 
   .btn-primary {
-    @apply bg-primary-500 text-white shadow-lg hover:bg-primary-600 active:bg-primary-700;
+    @apply bg-brand-primary text-white shadow-lg hover:bg-brand-primary-hover active:bg-brand-primary-hover;
   }
 
   .btn-secondary {
-    @apply bg-gray-200 text-gray-700 hover:bg-gray-300 active:bg-gray-400;
+    @apply bg-brand-surface border-2 border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white;
   }
 
   .card {
-    @apply bg-white rounded-xl shadow-md p-4;
+    @apply bg-brand-surface border border-brand-border rounded-xl shadow-md p-4;
   }
 
   .category-card {
-    @apply card cursor-pointer transition-all duration-200 active:scale-95 hover:shadow-lg border-2 border-transparent hover:border-primary-300;
+    @apply card cursor-pointer transition-all duration-200 active:scale-95 hover:shadow-lg hover:border-brand-primary/60 hover:-translate-y-1;
     min-height: 100px;
   }
 
   .code-input {
-    @apply w-full p-4 border-2 border-gray-300 rounded-lg font-mono text-sm resize-y focus:outline-none focus:border-primary-500 bg-gray-50;
+    @apply w-full p-4 border-2 border-brand-border rounded-lg font-mono text-sm resize-y focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 bg-brand-surface text-brand-text;
     min-height: 200px;
   }
 }

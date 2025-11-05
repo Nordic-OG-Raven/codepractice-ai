@@ -6,6 +6,7 @@ import Practice from './pages/Practice'
 import Results from './pages/Results'
 import DemoGate from './components/DemoGate'
 import DemoBanner from './components/DemoBanner'
+import { BrandingBar } from './components/BrandingBar'
 import { useExercise } from './contexts/ExerciseContext'
 import { initializeSession } from './utils/rateLimit'
 
@@ -53,7 +54,8 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-blue-50">
+    <div className="min-h-screen bg-brand-bg">
+      <BrandingBar />
       <DemoBanner />
       {currentPage === 'home' && (
         <Home 

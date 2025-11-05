@@ -7,17 +7,20 @@ export default {
   theme: {
     extend: {
       colors: {
+        brand: {
+          bg: '#0f172a',      // slate-950
+          surface: '#1e293b', // slate-800
+          primary: '#7c3aed', // purple-700
+          'primary-hover': '#6d28d9', // purple-800
+          border: '#1e293b',  // slate-800
+          text: '#f1f5f9',    // slate-100
+          'text-secondary': '#94a3b8', // slate-400
+          'text-muted': '#64748b', // slate-500
+        },
+        // Keep primary for backward compatibility, but use brand.primary
         primary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
+          700: '#7c3aed', // purple-700
+          600: '#6d28d9', // purple-800 (for hover)
         },
       },
     },
