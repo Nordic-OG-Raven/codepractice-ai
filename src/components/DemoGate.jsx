@@ -143,6 +143,7 @@ export default function DemoGate({ onStart }) {
           View on <a href="https://github.com/Nordic-OG-Raven" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline">GitHub</a>
         </p>
       </div>
+      </div>
     </div>
   );
 }
