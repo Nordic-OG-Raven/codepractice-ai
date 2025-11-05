@@ -158,25 +158,25 @@ const ExerciseCard = ({ exercise, onSubmit, exerciseNumber, totalExercises, onPr
     <>
       <div className="card space-y-4">
         {/* Progress */}
-        <div className="flex justify-between items-center text-sm text-gray-600">
+        <div className="flex justify-between items-center text-sm text-brand-text-secondary">
           <span className="font-semibold">Exercise {exerciseNumber}/{totalExercises}</span>
-          <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-            {exercise.language === 'sql' ? '🗄️ SQL' : '🐍 Python'}
+          <span className="text-xs bg-brand-surface border border-brand-border px-2 py-1 rounded text-brand-text-secondary">
+            {exercise.language === 'sql' ? 'SQL' : 'Python'}
           </span>
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-brand-border rounded-full h-2">
           <div
-            className="bg-primary-500 h-2 rounded-full transition-all duration-300"
+            className="bg-brand-primary h-2 rounded-full transition-all duration-300"
             style={{ width: `${(exerciseNumber / totalExercises) * 100}%` }}
           ></div>
         </div>
 
         {/* Question */}
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h3 className="font-semibold text-gray-800 mb-2">Question:</h3>
-          <p className="text-gray-700 whitespace-pre-wrap">{exercise.question}</p>
+        <div className="bg-brand-surface border border-brand-border rounded-lg p-4">
+          <h3 className="font-semibold text-brand-text mb-2">Question:</h3>
+          <p className="text-brand-text-secondary whitespace-pre-wrap">{exercise.question}</p>
         </div>
 
         {/* Code Editor */}
@@ -191,18 +191,15 @@ const ExerciseCard = ({ exercise, onSubmit, exerciseNumber, totalExercises, onPr
           <div
             className={`rounded-lg p-4 ${
               result.isCorrect
-                ? 'bg-green-50 border border-green-200'
-                : 'bg-red-50 border border-red-200'
+                ? 'bg-emerald-500/20 border border-emerald-500/50'
+                : 'bg-red-500/20 border border-red-500/50'
             }`}
           >
             <div className="flex items-start">
-              <span className="text-2xl mr-2">
-                {result.isCorrect ? '✅' : '❌'}
-              </span>
               <div className="flex-1">
                 <p
                   className={`${
-                    result.isCorrect ? 'text-green-800' : 'text-red-800'
+                    result.isCorrect ? 'text-emerald-400' : 'text-red-400'
                   } whitespace-pre-wrap`}
                 >
                   {result.message}
@@ -239,7 +236,7 @@ const ExerciseCard = ({ exercise, onSubmit, exerciseNumber, totalExercises, onPr
               className="btn btn-secondary flex-1"
               disabled={isChecking}
             >
-              💡 Help
+              Help
             </button>
             <button
               onClick={checkAnswer}

@@ -8,12 +8,6 @@ const Results = ({ onReturnHome }) => {
   const totalCount = sessionResults.length
   const percentage = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0
 
-  const getEmoji = (pct) => {
-    if (pct >= 90) return '🏆'
-    if (pct >= 70) return '🎉'
-    if (pct >= 50) return '👍'
-    return '💪'
-  }
 
   const getMessage = (pct) => {
     if (pct >= 90) return 'Outstanding work!'
@@ -28,28 +22,27 @@ const Results = ({ onReturnHome }) => {
         <div className="card">
           {/* Header */}
           <div className="text-center mb-6">
-            <div className="text-6xl mb-4">{getEmoji(percentage)}</div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            <h1 className="text-3xl font-bold text-brand-text mb-2">
               Session Complete!
             </h1>
-            <p className="text-xl text-gray-600">{getMessage(percentage)}</p>
+            <p className="text-xl text-brand-text-secondary">{getMessage(percentage)}</p>
           </div>
 
           {/* Score */}
-          <div className="bg-gradient-to-br from-primary-50 to-blue-50 rounded-xl p-6 mb-6">
+          <div className="bg-gradient-to-br from-brand-primary/20 to-brand-primary/10 border border-brand-primary/30 rounded-xl p-6 mb-6">
             <div className="text-center">
-              <div className="text-5xl font-bold text-primary-600 mb-2">
+              <div className="text-5xl font-bold text-brand-primary mb-2">
                 {correctCount}/{totalCount}
               </div>
-              <p className="text-gray-700">Correct Answers</p>
+              <p className="text-brand-text-secondary">Correct Answers</p>
               <div className="mt-4">
-                <div className="w-full bg-gray-200 rounded-full h-3">
+                <div className="w-full bg-brand-border rounded-full h-3">
                   <div
-                    className="bg-primary-500 h-3 rounded-full transition-all duration-500"
+                    className="bg-brand-primary h-3 rounded-full transition-all duration-500"
                     style={{ width: `${percentage}%` }}
                   ></div>
                 </div>
-                <p className="text-sm text-gray-600 mt-2">{percentage}% Success Rate</p>
+                <p className="text-sm text-brand-text-secondary mt-2">{percentage}% Success Rate</p>
               </div>
             </div>
           </div>
@@ -57,7 +50,7 @@ const Results = ({ onReturnHome }) => {
           {/* Exercise Breakdown */}
           {sessionResults.length > 0 && (
             <div className="mb-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-3">
+              <h2 className="text-lg font-semibold text-brand-text mb-3">
                 Exercise Summary
               </h2>
               <div className="space-y-2 max-h-60 overflow-y-auto">
@@ -66,19 +59,16 @@ const Results = ({ onReturnHome }) => {
                     key={idx}
                     className={`p-3 rounded-lg border ${
                       result.isCorrect
-                        ? 'bg-green-50 border-green-200'
-                        : 'bg-red-50 border-red-200'
+                        ? 'bg-emerald-500/20 border-emerald-500/50'
+                        : 'bg-red-500/20 border-red-500/50'
                     }`}
                   >
                     <div className="flex items-start">
-                      <span className="text-xl mr-2">
-                        {result.isCorrect ? '✅' : '❌'}
-                      </span>
                       <div className="flex-1 text-sm">
-                        <p className="font-medium text-gray-800">
+                        <p className="font-medium text-brand-text">
                           Exercise {idx + 1}
                         </p>
-                        <p className="text-gray-600 line-clamp-2">
+                        <p className="text-brand-text-secondary line-clamp-2">
                           {result.question}
                         </p>
                       </div>

@@ -84,11 +84,10 @@ const Practice = ({ category, onFinish, onBack, reviewSession = null }) => {
       <div className="min-h-screen p-4 flex items-center justify-center">
         <div className="card max-w-md">
           <div className="text-center">
-            <div className="text-5xl mb-4">⚠️</div>
-            <h2 className="text-xl font-bold text-gray-800 mb-2">
+            <h2 className="text-xl font-bold text-brand-text mb-2">
               Oops! Something went wrong
             </h2>
-            <p className="text-gray-600 mb-4">{error}</p>
+            <p className="text-brand-text-secondary mb-4">{error}</p>
             <div className="space-y-2">
               <button
                 onClick={() => window.location.reload()}
@@ -116,11 +115,10 @@ const Practice = ({ category, onFinish, onBack, reviewSession = null }) => {
       <div className="min-h-screen p-4 flex items-center justify-center">
         <div className="card max-w-md">
           <div className="text-center">
-            <div className="text-6xl mb-4">🎉</div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            <h2 className="text-2xl font-bold text-brand-text mb-2">
               Congratulations!
             </h2>
-            <p className="text-gray-600 mb-4">
+            <p className="text-brand-text-secondary mb-4">
               You've mastered the current level. Ready for a bigger challenge?
             </p>
             <div className="flex justify-center mb-6">
@@ -131,7 +129,7 @@ const Practice = ({ category, onFinish, onBack, reviewSession = null }) => {
                 onClick={handleLevelUp}
                 className="btn btn-primary w-full"
               >
-                Level Up! 🚀
+                Level Up!
               </button>
               <button
                 onClick={handleStaySameLevel}
@@ -153,7 +151,7 @@ const Practice = ({ category, onFinish, onBack, reviewSession = null }) => {
         <div className="flex justify-between items-center mb-2">
           <button
             onClick={onBack}
-            className="text-primary-600 font-medium text-sm"
+            className="text-brand-primary hover:text-brand-primary-hover font-medium text-sm transition-colors"
           >
             ← Back
           </button>
@@ -163,12 +161,12 @@ const Practice = ({ category, onFinish, onBack, reviewSession = null }) => {
               className="btn btn-secondary text-sm px-3 py-1"
               title="Open notes"
             >
-              📝 Notes
+              Notes
             </button>
             <LevelBadge level={currentLevel} category={category} />
           </div>
         </div>
-        <h1 className="text-2xl font-bold text-gray-800">{category}</h1>
+        <h1 className="text-2xl font-bold text-brand-text">{category}</h1>
       </div>
 
       {/* Exercise */}
@@ -177,11 +175,11 @@ const Practice = ({ category, onFinish, onBack, reviewSession = null }) => {
           // Loading state - but UI is still accessible
           <div className="card">
             <LoadingSpinner message="Generating your personalized exercises..." />
-            <p className="text-center text-sm text-gray-500 mt-4">
+            <p className="text-center text-sm text-brand-text-muted mt-4">
               This may take 10-15 seconds
             </p>
-            <p className="text-center text-xs text-gray-400 mt-2">
-              💡 Tip: Open notes (📝 button) to review while waiting
+            <p className="text-center text-xs text-brand-text-secondary mt-2">
+              Tip: Open notes button to review while waiting
             </p>
           </div>
         ) : currentExercise ? (
@@ -202,15 +200,15 @@ const Practice = ({ category, onFinish, onBack, reviewSession = null }) => {
               onClick={handleFinishSession}
               className="btn btn-primary w-full"
             >
-              🎯 Finish Session
+              Finish Session
             </button>
           </div>
         )}
         
         {/* Review mode indicator */}
         {isReviewMode && (
-          <div className="mt-4 text-center text-sm text-gray-600">
-            📚 Reviewing past session
+          <div className="mt-4 text-center text-sm text-brand-text-secondary">
+            Reviewing past session
           </div>
         )}
       </div>
@@ -226,10 +224,10 @@ const Practice = ({ category, onFinish, onBack, reviewSession = null }) => {
       {!showNotes && (
         <button
           onClick={() => setShowNotes(true)}
-          className="fixed bottom-6 right-6 bg-primary-500 text-white w-14 h-14 rounded-full shadow-lg hover:bg-primary-600 active:scale-95 transition-all flex items-center justify-center text-2xl z-40"
+          className="fixed bottom-6 right-6 bg-brand-primary text-white w-14 h-14 rounded-full shadow-lg hover:bg-brand-primary-hover active:scale-95 transition-all flex items-center justify-center text-xl font-bold z-40"
           title="Open notes"
         >
-          📝
+          Notes
         </button>
       )}
     </div>
